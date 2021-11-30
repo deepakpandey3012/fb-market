@@ -18,6 +18,10 @@ export interface AddcampaignData {
   name: string;
   objective: string;
   special_ad_categories: string[];
+  campaign_budget_optimization: boolean;
+  campaign_budget_label: string;
+  campaign_budget_amount: number;
+  bid_strategy: string;
 }
 
 export class credentialsModel {
@@ -38,6 +42,7 @@ export class FbAdCampaignsComponent implements OnInit {
   isVerified: boolean = false;
 
   campaigns: any;
+  totalCampaignsCount: number = 0;
 
   preSets = [
     {value: 'today'},
@@ -76,20 +81,22 @@ export class FbAdCampaignsComponent implements OnInit {
   getCampaigns(){
     this.campaignService.getDefaultCampaigns(this.dateRange, this.preset).subscribe(result=>{
       this.campaigns = result;
+      this.totalCampaignsCount = this.campaigns.length;
     });
   }
 
   onAuthSubmit(data){
-    const credential = new credentialsModel();
-    credential.access_token = data.token;
-    credential.account_id = data.id;
-    console.log(credential);
-    this.campaignService.sendCredentials(credential).subscribe(result=>{
-      if(result){
-        this.isVerified = true;
-        this.getCampaigns();
-      }
-    });
+    if(data.token && data.id){
+      const credential = new credentialsModel();
+      credential.access_token = data.token;
+      credential.account_id = data.id;
+      this.campaignService.sendCredentials(credential).subscribe(result=>{
+        if(result){
+          this.isVerified = true;
+          this.getCampaigns();
+        }
+      });
+    }
   }
 
   onDateChange(event: any): void {
@@ -98,7 +105,6 @@ export class FbAdCampaignsComponent implements OnInit {
     const endDate = moment(this.range.value.end, 'MM-DD-YYYY').format('YYYY-MM-DD');
     this.dateRange.push(startDate);
     this.dateRange.push(endDate);
-    console.log(this.dateRange);
     this.getCampaigns();
   }
 
@@ -112,7 +118,7 @@ export class FbAdCampaignsComponent implements OnInit {
   openDialog(action: any,obj: any) {
     obj.action = action;
     const dialogRef = this.dialog.open(CampaignDialogBoxComponent, {
-      width: '250px',
+      width: '460px',
       data:obj
     });
 
@@ -128,7 +134,13 @@ export class FbAdCampaignsComponent implements OnInit {
 
   addCampaign(row_obj){
     delete row_obj.action;
-    console.log(row_obj);
+    row_obj = {
+      ...row_obj,
+      [row_obj.campaign_budget_label]: row_obj.campaign_budget_amount
+    }
+    delete row_obj.campaign_budget_label;
+    delete row_obj.campaign_budget_amount;
+
     this.campaignService.createCampaign(row_obj).subscribe(result=>{
       if(result){
         this.getCampaigns();

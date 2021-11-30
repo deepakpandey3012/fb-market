@@ -8,7 +8,7 @@ export class CampaignService {
 
   getDefaultCampaignsUrl = "http://127.0.0.1:8000/campaign/";
   postDefaultCampaignsUrl = "http://127.0.0.1:8000/campaign/";
-  sendCredentialsUrl = "http://127.0.0.1:8000/campaign/accountSecrets/";
+  sendCredentialsUrl = "http://127.0.0.1:8000/campaign/accountSecrets";
   constructor(private http: HttpClient) {   }
 
   getDefaultCampaigns(dateRange: string[], preSet){

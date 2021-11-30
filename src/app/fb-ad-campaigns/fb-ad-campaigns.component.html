@@ -4,12 +4,12 @@
   <div class="mat-elevation-z8 ad-campaigns" style="width: 50%;">
     <mat-form-field class="credentials-full-width" appearance="fill">
       <mat-label>Ad account Id</mat-label>
-      <input matInput placeholder="Enter you Fb Ad account Id" type="text" ngModel name="id">
+      <input matInput placeholder="Enter you Fb Ad account Id" type="text" ngModel name="id" [required]="true">
     </mat-form-field>
   
     <mat-form-field class="credentials-full-width" appearance="fill">
       <mat-label>Access Token</mat-label>
-      <textarea matInput placeholder="Generate and Enter you Access Token here" ngModel name="token"></textarea>
+      <textarea matInput placeholder="Generate and Enter you Access Token here" ngModel name="token" [required]="true"></textarea>
     </mat-form-field>
   </div>
   <div style="padding-left: 25%;">
@@ -17,6 +17,7 @@
   </div>
 </form>
 
+<!-- <div class="mat-elevation-z8 ad-campaigns"> -->
 <div class="mat-elevation-z8 ad-campaigns" *ngIf="isVerified">
 
   <button mat-raised-button color="accent" (click)="openDialog('Add',{})" style="position: fixed; top: 0; z-index: 100;">Create</button>
@@ -59,7 +60,7 @@
     </table>
   </div>
 
-  <mat-form-field appearance="outline">
+  <mat-form-field appearance="outline" style="padding-right: 20px;">
     <mat-label>Select Date Range</mat-label>
     <mat-date-range-input [rangePicker]="picker" [formGroup]="range">
       <input matStartDate placeholder="Start Date" formControlName="start">
@@ -77,6 +78,6 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-
+  <h4 style="color: darkgrey;">Results from {{totalCampaignsCount}} campaigns</h4>
 </div>
 

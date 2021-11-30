@@ -2,28 +2,70 @@
 <h3 mat-dialog-title>Add a Campaign</h3>
 
 <div mat-dialog-content>
-  <mat-form-field>
-    <input placeholder="{{action}} Name" matInput [(ngModel)]="local_data.name">
+  <mat-form-field style="width: 400px;">
+    <input placeholder="{{action}} Name" matInput [(ngModel)]="local_data.name" [required]="true">
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
+  <mat-form-field class="flex-container" appearance="fill" style="width: 400px;">
     <mat-label>Campaign Objective</mat-label>
-    <mat-select [(ngModel)]="selectedObjective" name="objectivee">
+    <mat-select [(ngModel)]="selectedObjective" name="objectivee" [required]="true">
       <mat-option *ngFor="let obj of objectives" [value]="obj.value">
         {{obj.value}}
       </mat-option>
     </mat-select> 
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
+  <mat-form-field class="flex-container" appearance="fill">
     <mat-label>Special Ad Categories</mat-label>
     <mat-select [formControl]="special_Adcategories" [(value)]="selectedSpecialCategory" multiple>
       <mat-option *ngFor="let category of specialAdCategories" [value]="category.value">{{category.value}}</mat-option>
     </mat-select>
   </mat-form-field>
+
+  <div style="padding:0px 0px 20px 10px;">
+    <label style="padding-right: 150px ;"> Add Campaign Spending Limit</label>
+    <mat-slide-toggle (change)="spendingLimitToggle($event)"></mat-slide-toggle>
+  </div>
+  <div  *ngIf="isSpendingLimitChecked">
+    <mat-form-field appearance="fill">
+      <mat-label>Set Limit(at least $100)</mat-label>
+      <input matInput type="number" [(ngModel)]="spendingBudgetCapAmount">
+    </mat-form-field>
+  </div>
+
+  <div style="padding:0px 0px 20px 10px;">
+    <label style="padding-right: 150px ;"> Campaign Budget Optimization</label>
+    <mat-slide-toggle (change)="optimizationToggle($event)"></mat-slide-toggle>
+  </div>
+
+  <div *ngIf="isOptimizationChecked">
+    <label style="padding:0px 0px 20px 10px; color: darkgrey">Campaign Budget</label>
+    <mat-form-field appearance="fill">
+      <mat-select [(ngModel)]="campaignBudgetLabel" name="budgetLabel">
+        <mat-option *ngFor="let obj of campaignBudgetLabels" [value]="obj.value">
+          {{obj.value}}
+        </mat-option>
+      </mat-select> 
+    </mat-form-field>  
+  
+    <mat-form-field appearance="fill">
+      <mat-label>Campaign Budget Amount</mat-label>
+      <input matInput type="number" [(ngModel)]="campaignBudgetAmount">
+    </mat-form-field>
+
+    <label style="padding:0px 0px 20px 10px; color: darkgrey">Campaign Bid Strategy</label>
+    <mat-form-field appearance="fill">
+      <mat-select [(ngModel)]="bidStrategy" name="BidStrategy">
+        <mat-option *ngFor="let obj of bidStrategies" [value]="obj.value">
+          {{obj.value}}
+        </mat-option>
+      </mat-select> 
+    </mat-form-field>
+  </div>
+
   
 </div>
-<div mat-dialog-actions>
-  <button mat-button (click)="doAction()">{{action}}</button>
-  <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>
+<div mat-dialog-actions style="padding-left: 250px;">
+  <button mat-raised-button (click)="doAction()" color="warn">{{action}}</button>
+  <button mat-raised-button (click)="closeDialog()">Cancel</button>
 </div>
