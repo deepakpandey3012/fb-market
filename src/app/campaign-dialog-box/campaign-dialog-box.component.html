@@ -1,0 +1,29 @@
+<!-- dialog-box.component.html -->
+<h3 mat-dialog-title>Add a Campaign</h3>
+
+<div mat-dialog-content>
+  <mat-form-field>
+    <input placeholder="{{action}} Name" matInput [(ngModel)]="local_data.name">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Campaign Objective</mat-label>
+    <mat-select [(ngModel)]="selectedObjective" name="objectivee">
+      <mat-option *ngFor="let obj of objectives" [value]="obj.value">
+        {{obj.value}}
+      </mat-option>
+    </mat-select> 
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Special Ad Categories</mat-label>
+    <mat-select [formControl]="special_Adcategories" [(value)]="selectedSpecialCategory" multiple>
+      <mat-option *ngFor="let category of specialAdCategories" [value]="category.value">{{category.value}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="doAction()">{{action}}</button>
+  <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>
+</div>

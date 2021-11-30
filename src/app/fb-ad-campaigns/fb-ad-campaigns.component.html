@@ -1,0 +1,82 @@
+<h2 style="padding-left: 25%; color:darkgrey;" *ngIf="!isVerified">Enter Credentials</h2>
+<form (ngSubmit)="onAuthSubmit(heroForm.value)" #heroForm="ngForm" *ngIf="!isVerified">
+  
+  <div class="mat-elevation-z8 ad-campaigns" style="width: 50%;">
+    <mat-form-field class="credentials-full-width" appearance="fill">
+      <mat-label>Ad account Id</mat-label>
+      <input matInput placeholder="Enter you Fb Ad account Id" type="text" ngModel name="id">
+    </mat-form-field>
+  
+    <mat-form-field class="credentials-full-width" appearance="fill">
+      <mat-label>Access Token</mat-label>
+      <textarea matInput placeholder="Generate and Enter you Access Token here" ngModel name="token"></textarea>
+    </mat-form-field>
+  </div>
+  <div style="padding-left: 25%;">
+    <button mat-raised-button color="accent">Submit</button>
+  </div>
+</form>
+
+<div class="mat-elevation-z8 ad-campaigns" *ngIf="isVerified">
+
+  <button mat-raised-button color="accent" (click)="openDialog('Add',{})" style="position: fixed; top: 0; z-index: 100;">Create</button>
+
+  <div style="margin: 40px 0px;">
+  
+    <table mat-table [dataSource]="campaigns" #mytable class="full-width-table" aria-label="Elements">
+
+      <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Campaign Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <!-- Staus Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Staus </th>
+        <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+      </ng-container>
+
+      <!-- Objective Column -->
+      <ng-container matColumnDef="objective">
+        <th mat-header-cell *matHeaderCellDef> Objective </th>
+        <td mat-cell *matCellDef="let element"> {{element.objective}} </td>
+      </ng-container>
+
+      <!-- Action Column -->
+      <!-- <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let element" class="action-link"> 
+          <a (click)="openDialog('Update',element)">Edit</a>
+        </td>
+      </ng-container> -->
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Select Date Range</mat-label>
+    <mat-date-range-input [rangePicker]="picker" [formGroup]="range">
+      <input matStartDate placeholder="Start Date" formControlName="start">
+      <input matEndDate placeholder="End Date" formControlName="end" (dateChange)="onDateChange($event)">
+    </mat-date-range-input>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+  </mat-form-field>
+    
+  <mat-form-field appearance="fill">
+    <mat-label>Select Preset</mat-label>
+    <mat-select [(ngModel)]="preset" name="Preset">
+      <mat-option (onSelectionChange)="onPresetchange($event)" *ngFor="let pre of preSets" [value]="pre.value">
+        {{pre.value}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+</div>
+
