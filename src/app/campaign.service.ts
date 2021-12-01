@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 export class CampaignService {
   getDefaultCampaignsUrl = 'http://3.135.233.196/api/campaign/';
   postDefaultCampaignsUrl = 'http://3.135.233.196/api/campaign/';
-  sendCredentialsUrl = 'http://3.135.233.196/api/accountSecrets';
+  sendCredentialsUrl = 'http://3.135.233.196/api/campaign/accountSecrets';
   constructor(private http: HttpClient) {}
 
   getDefaultCampaigns(dateRange: string[], preSet) {
