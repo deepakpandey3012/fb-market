@@ -1,0 +1,110 @@
+<!-- dialog-box.component.html -->
+<h3 mat-dialog-title>Add an Ad Set</h3>
+
+<div mat-dialog-content>
+  <mat-form-field style="width: 400px;">
+    <input placeholder="{{action}} Name" matInput [(ngModel)]="local_data.name" [required]="true">
+  </mat-form-field>
+
+  <div style="padding:0px 0px 20px 10px;">
+    <label style="padding-right: 240px ;"> Dynamic Creative</label>
+    <mat-slide-toggle (change)="dynamicCreativeToggle($event)"></mat-slide-toggle>
+  </div>
+
+  <label style="padding:0px 0px 20px 10px;">Optimization</label>
+  <mat-form-field appearance="fill">
+    <mat-select [(ngModel)]="selectedOptimizationGoal" name="SelectedOptimization">
+      <mat-option *ngFor="let obj of optimizationGoals" [value]="obj.value">
+        {{obj.value}}
+      </mat-option>
+    </mat-select> 
+  </mat-form-field>
+
+  <label style="padding:0px 0px 20px 10px;">Billing</label>
+  <mat-form-field appearance="fill">
+    <mat-select [(ngModel)]="selectedBillingEvent" name="SelectedBilling">
+      <mat-option *ngFor="let obj of billingEvents" [value]="obj.value">
+        {{obj.value}}
+      </mat-option>
+    </mat-select> 
+  </mat-form-field>
+
+  <label style="padding:0px 0px 20px 10px;">Budget & schedule</label>
+    <!-- <mat-form-field appearance="fill">
+      <mat-select [(ngModel)]="adSetBudgetLabel" name="budgetLabel">
+        <mat-option *ngFor="let obj of adSetBudgetLabels" [value]="obj.value">
+          {{obj.value}}
+        </mat-option>
+      </mat-select> 
+    </mat-form-field>  
+  
+    <mat-form-field appearance="fill">
+      <mat-label>AdSet Budget Amount</mat-label>
+      <input matInput type="number" [(ngModel)]="adSetBudgetAmount">
+    </mat-form-field> -->
+
+    <label style="padding:0px 0px 20px 10px;">Start Date-Time</label>
+    <div class="flex-container">
+      <input matInput [matDatepicker]="picker1"
+             (dateInput)="startDateEvent('input', $event)">
+      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
+  
+      <input matInput [matDatepicker]="picker2"
+             (dateInput)="endDateEvent('input', $event)">
+      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
+    </div>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Bid Amount</mat-label>
+      <input matInput type="number" [(ngModel)]="bidAmount">
+    </mat-form-field>
+
+
+    <label style="padding:0px 0px 20px 10px;">Audience</label>
+    <mat-form-field appearance="fill">
+      <mat-select [(ngModel)]="adSetgendertLabel" name="genderLabel">
+        <mat-option *ngFor="let obj of adSetgendertLabels" [value]="obj.value">
+          {{obj.DisplayName}}
+        </mat-option>
+      </mat-select> 
+    </mat-form-field> 
+
+    <mat-form-field appearance="fill">
+      <mat-label>Minimum Age(at least 13)</mat-label>
+      <input matInput type="number" [(ngModel)]="age_min">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Maximum Age(at most 65)</mat-label>
+      <input matInput type="number" [(ngModel)]="age_max">
+    </mat-form-field>
+
+    <mat-form-field class="flex-container" appearance="fill">
+      <mat-label>Countries</mat-label>
+      <mat-select [formControl]="target_countries" [(value)]="selectedCountry" multiple>
+        <mat-option *ngFor="let category of countries" [value]="category.value">{{category.Displayname}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="flex-container" appearance="fill">
+      <mat-label>Device Platform</mat-label>
+      <mat-select [formControl]="target_device" [(value)]="selecteddevicePlatform" multiple>
+        <mat-option *ngFor="let obj of devicePlatforms" [value]="obj.value">{{obj.value}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- <mat-form-field class="flex-container" appearance="fill">
+      <mat-label>Publisher Platform</mat-label>
+      <mat-select [formControl]="target_publisher" [(value)]="selectedpublisherPlatform" multiple>
+        <mat-option *ngFor="let obj of publisherPlatforms" [value]="obj.value">{{obj.value}}</mat-option>
+      </mat-select>
+    </mat-form-field> -->
+
+
+  
+</div>
+<div mat-dialog-actions style="padding-left: 250px;">
+  <button mat-raised-button (click)="doAction()" color="warn">{{action}}</button>
+  <button mat-raised-button (click)="closeDialog()">Cancel</button>
+</div>

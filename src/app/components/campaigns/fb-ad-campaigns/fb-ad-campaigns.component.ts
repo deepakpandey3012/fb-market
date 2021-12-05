@@ -5,7 +5,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { CampaignDialogBoxComponent } from '../campaign-dialog-box/campaign-dialog-box.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
-import { CampaignService } from '../campaign.service';
+import { CampaignService } from 'src/app/campaign.service';
+import { AdSetDialogBoxComponent } from '../../adsets/adset-dialog-box/adset-dialog-box.component';
 
 export interface campaignData {
   id: number;
@@ -24,11 +25,29 @@ export interface AddcampaignData {
   bid_strategy: string;
 }
 
+export interface AddAdsetData {
+  campaign_id: string;
+  name: string;
+  bid_amount: number;
+  adset_budget_label: string;
+  adset_budget_amount: number;
+  is_dynamic_creative: boolean;
+  billing_event: string;
+  optimization_goal: string;
+  start_time: number;
+  end_time: number;
+  age_min: number; 
+  age_max: number;
+  genders: number;
+  device_platforms: string[]; 
+  // publisher_platforms: string[]; 
+  countries: string[]; 
+}
+
 export class credentialsModel {
   access_token: string;
   account_id: string;
 }
-
 
 @Component({
   selector: 'app-fb-ad-campaigns',
@@ -101,6 +120,7 @@ export class FbAdCampaignsComponent implements OnInit {
 
   onDateChange(event: any): void {
     this.range.value.date = event;
+    console.log(this.range.value.start);
     const startDate = moment(this.range.value.start, 'MM-DD-YYYY').format('YYYY-MM-DD');
     const endDate = moment(this.range.value.end, 'MM-DD-YYYY').format('YYYY-MM-DD');
     this.dateRange.push(startDate);
@@ -115,7 +135,12 @@ export class FbAdCampaignsComponent implements OnInit {
     }
   }
 
-  openDialog(action: any,obj: any) {
+  
+  openAdSet(element){
+    console.log(element);
+  }
+
+  openCampaignDialog(action: any,obj: any) {
     obj.action = action;
     const dialogRef = this.dialog.open(CampaignDialogBoxComponent, {
       width: '460px',
@@ -124,7 +149,7 @@ export class FbAdCampaignsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result.event == 'Add'){
-        this.addCampaign(result.data);
+        this.addCampaign(result);
       }
       // else if(result.event == 'Update'){
       //   this.updateRowData(result.data);
@@ -132,7 +157,8 @@ export class FbAdCampaignsComponent implements OnInit {
     });
   }
 
-  addCampaign(row_obj){
+  addCampaign(campaign_result){
+    let row_obj = campaign_result.data;
     delete row_obj.action;
     row_obj = {
       ...row_obj,
@@ -143,7 +169,46 @@ export class FbAdCampaignsComponent implements OnInit {
 
     this.campaignService.createCampaign(row_obj).subscribe(result=>{
       if(result){
+        console.log(result['id']);
         this.getCampaigns();
+        this.openAdSetDialog(campaign_result.event, {}, result['id']);
+      }
+    });
+  }
+
+  openAdSetDialog(action:any, obj:any, campaignId:string) {
+    obj.action = action;
+    obj.campaign_id = campaignId;
+    const adSetDialogRef = this.dialog.open(AdSetDialogBoxComponent, {
+      width: '460px',
+      data:obj
+    });
+
+    adSetDialogRef.afterClosed().subscribe(result => {
+      if(result.event == 'Add'){
+        this.addAdSet(result);
+      }
+      // else if(result.event == 'Update'){
+      //   this.updateRowData(result.data);
+      // }
+    });
+  }
+
+  addAdSet(adset_result){
+    let row_obj = adset_result.data;
+    delete row_obj.action;
+    row_obj = {
+      ...row_obj,
+      [row_obj.adset_budget_label]: row_obj.adset_budget_amount
+    }
+    delete row_obj.adset_budget_label;
+    delete row_obj.adset_budget_amount;
+
+    console.log(row_obj);
+
+    this.campaignService.createAdSet(row_obj).subscribe(result=>{
+      if(result){
+        console.log(result);
       }
     });
   }

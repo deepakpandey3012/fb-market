@@ -1,1 +1,9 @@
-<app-fb-ad-campaigns></app-fb-ad-campaigns>
+<!-- <app-fb-ad-campaigns></app-fb-ad-campaigns> -->
+
+<nav mat-tab-nav-bar [backgroundColor]="myColor">
+    <a mat-tab-link *ngFor="let link of links; index as i"
+        [href]="link"
+        (click)="activeLink = link"
+        [active]="activeLink == link"> {{titles[i]}} </a>
+</nav> 
+<router-outlet></router-outlet>
