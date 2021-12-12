@@ -1,0 +1,14 @@
+<!-- dialog-box.component.html -->
+<h3 mat-dialog-title>Add an Ad</h3>
+
+<div mat-dialog-content>
+  <mat-form-field style="width: 400px;">
+    <input placeholder="{{action}} Name" matInput [(ngModel)]="local_data.name" [required]="true">
+  </mat-form-field>
+    
+  
+</div>
+<div mat-dialog-actions style="padding-left: 250px;">
+  <button mat-raised-button (click)="doAction()" color="warn">{{action}}</button>
+  <button mat-raised-button (click)="closeDialog()">Cancel</button>
+</div>

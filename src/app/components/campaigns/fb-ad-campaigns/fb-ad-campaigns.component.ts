@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,6 +7,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 import { CampaignService } from 'src/app/campaign.service';
 import { AdSetDialogBoxComponent } from '../../adsets/adset-dialog-box/adset-dialog-box.component';
+import { Subscription } from 'rxjs';
 
 export interface campaignData {
   id: number;
@@ -54,8 +55,8 @@ export class credentialsModel {
   templateUrl: './fb-ad-campaigns.component.html',
   styleUrls: ['./fb-ad-campaigns.component.scss'],
 })
-export class FbAdCampaignsComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'status', 'objective'];
+export class FbAdCampaignsComponent implements OnInit, OnDestroy {
+  displayedColumns: string[] = ['name', 'status', 'objective', 'action'];
   preset: string;
   dateRange: string[] = [];
   isVerified: boolean = false;
@@ -83,6 +84,8 @@ export class FbAdCampaignsComponent implements OnInit {
     {value: 'this_year'},
   ];
 
+  tempVerified = true;
+
   @ViewChild(MatTable, { static: true })table!: MatTable<any>;
 
   range = new FormGroup({
@@ -90,11 +93,19 @@ export class FbAdCampaignsComponent implements OnInit {
     end: new FormControl()
   });
 
+  verified: boolean;
+  subscription: Subscription;
+
   constructor(
     public dialog: MatDialog,
     private campaignService: CampaignService) {}
 
   ngOnInit(){
+    this.subscription = this.campaignService.currentVerification.subscribe(data => this.verified = data);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   getCampaigns(){
@@ -112,6 +123,7 @@ export class FbAdCampaignsComponent implements OnInit {
       this.campaignService.sendCredentials(credential).subscribe(result=>{
         if(result){
           this.isVerified = true;
+          this.campaignService.changeVerification(true);
           this.getCampaigns();
         }
       });

@@ -2,8 +2,8 @@
 
 <nav mat-tab-nav-bar [backgroundColor]="myColor">
     <a mat-tab-link *ngFor="let link of links; index as i"
-        [href]="link"
         (click)="activeLink = link"
-        [active]="activeLink == link"> {{titles[i]}} </a>
+        [href]="link"
+        [active]="activeLink == link" [datas]="message"> {{titles[i]}} </a>
 </nav> 
 <router-outlet></router-outlet>

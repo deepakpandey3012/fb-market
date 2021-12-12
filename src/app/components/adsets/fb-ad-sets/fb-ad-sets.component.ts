@@ -1,10 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 import { CampaignService } from 'src/app/campaign.service';
+import { Subscription } from 'rxjs';
+import { AdsDialogBoxComponent } from '../../ads/ads-dialog-box/ads-dialog-box.component';
+import { AdCreativeDialogBoxComponent } from '../../ads/ad-creative-dialog-box/ad-creative-dialog-box.component';
 
 export interface campaignData {
   id: number;
@@ -41,8 +44,8 @@ export interface AddAdsetData {
   templateUrl: './fb-ad-sets.component.html',
   styleUrls: ['./fb-ad-sets.component.scss']
 })
-export class FbAdSetsComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'status', 'campaign_name', 'billing_event'];
+export class FbAdSetsComponent implements OnInit, OnDestroy {
+  displayedColumns: string[] = ['name', 'status', 'campaign_name', 'billing_event', 'action'];
   preset: string;
   dateRange: string[] = [];
   isVerified: boolean = false;
@@ -70,19 +73,29 @@ export class FbAdSetsComponent implements OnInit {
     {value: 'this_year'},
   ];
 
+  
+  tempVerified = false;
   @ViewChild(MatTable, { static: true })table!: MatTable<any>;
-
+  @Input() datas: string;
   range = new FormGroup({
     start: new FormControl(),
     end: new FormControl()
   });
 
+  verified: boolean;
+  subscription: Subscription;
+  
   constructor(
     public dialog: MatDialog,
     private campaignService: CampaignService) {}
 
   ngOnInit(){
+    this.subscription = this.campaignService.currentVerification.subscribe(data => this.verified = data);
     this.getAdsets();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   getAdsets(){
@@ -107,6 +120,79 @@ export class FbAdSetsComponent implements OnInit {
       this.preset = event.source.value;
       this.getAdsets();
     }
+  }
+
+  openAdCreativeDialog(action:any, obj:any) {
+    let adsetId = obj.id;
+    if(action == 'Add'){
+      obj = {};
+    }
+    obj.action = action;
+    const adCreativeDialogRef = this.dialog.open(AdCreativeDialogBoxComponent, {
+      width: '460px',
+      data:obj
+    });
+
+    adCreativeDialogRef.afterClosed().subscribe(result => {
+      if(result.event == 'Add'){
+        result.data.adset_id = adsetId;
+        this.addAdCreative(result);
+      }
+      // else if(result.event == 'Update'){
+      //   this.updateRowData(result.data);
+      // }
+    });
+  }
+
+  addAdCreative(creative_result){
+    let row_obj = creative_result.data;
+    let action = row_obj.action;
+    delete row_obj.action;
+
+
+    this.campaignService.createCreative(row_obj).subscribe(result=>{
+      if(result){
+        console.log(result);
+        // this.openAdsDialog(action, row_obj);
+      }
+    });
+  }
+
+  openAdsDialog(action:any, obj:any) {
+    let creativeId = obj.creative_id;
+    let adsetId = obj.adset_id;
+    if(action == 'Add'){
+      obj = {};
+    }
+    obj.adSetId = adsetId;
+    obj.adCreativeId = creativeId;
+    obj.action = action;
+    const adsDialogRef = this.dialog.open(AdsDialogBoxComponent, {
+      width: '460px',
+      data:obj
+    });
+
+    adsDialogRef.afterClosed().subscribe(result => {
+      if(result.event == 'Add'){
+        // console.log(result, 'from ads');
+        this.addAds(result);
+      }
+      // else if(result.event == 'Update'){
+      //   this.updateRowData(result.data);
+      // }
+    });
+  }
+
+  addAds(creative_result){
+    let row_obj = creative_result.data;
+    let action = row_obj.action;
+    delete row_obj.action;
+
+    this.campaignService.createCreative(row_obj).subscribe(result=>{
+      if(result){
+        this.openAdsDialog(action, row_obj);
+      }
+    });
   }
 
 }

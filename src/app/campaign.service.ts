@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,11 +8,18 @@ import { Observable } from 'rxjs';
 
 export class CampaignService {
 
+  private verificationSource = new BehaviorSubject(false);
+  currentVerification = this.verificationSource.asObservable();
+
   getDefaultCampaignsUrl = "http://127.0.0.1:8000/campaign/";
   getDefaultAdsetsUrl = "http://127.0.0.1:8000/adset/";
   postDefaultCampaignsUrl = "http://127.0.0.1:8000/campaign/";
   postAdsetUrl = "http://127.0.0.1:8000/adset/";
   sendCredentialsUrl = "http://127.0.0.1:8000/campaign/accountSecrets";
+
+  postCreativeUrl = "http://127.0.0.1:8000/ads/adCreative/";
+  postAdsUrl = "http://127.0.0.1:8000/ads/";
+
   constructor(private http: HttpClient) {   }
 
   getDefaultCampaigns(dateRange: string[], preSet){
@@ -47,5 +54,13 @@ export class CampaignService {
 
  sendCredentials(data){
   return this.http.post(this.sendCredentialsUrl, data);
+  }
+
+  changeVerification(data: boolean) {
+    this.verificationSource.next(data);
+  }
+
+  createCreative(data){
+    return this.http.post(this.postCreativeUrl, data);
   }
 }

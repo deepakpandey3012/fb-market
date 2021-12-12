@@ -1,4 +1,5 @@
 <h2 style="padding-left: 25%; color:darkgrey;" *ngIf="!isVerified">Enter Credentials</h2>
+
 <form (ngSubmit)="onAuthSubmit(heroForm.value)" #heroForm="ngForm" *ngIf="!isVerified">
   
   <div class="mat-elevation-z8 ad-campaigns" style="width: 50%;">
@@ -19,7 +20,6 @@
 
 <!-- <div class="mat-elevation-z8 ad-campaigns"> -->
 <div class="mat-elevation-z8 ad-campaigns" *ngIf="isVerified">
-
   <button mat-raised-button color="accent" (click)="openCampaignDialog('Add',{})" style="position: fixed; top: 0; z-index: 100; ">Create</button>
 
   <div style="margin: 40px 0px;">
@@ -48,12 +48,12 @@
       </ng-container>
 
       <!-- Action Column -->
-      <!-- <ng-container matColumnDef="action">
+      <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef> Action </th>
-        <td mat-cell *matCellDef="let element"> 
-        <button mat-raised-button color="accent" (click)="openAdSet(element)">Open AdSets</button>
+        <td mat-cell *matCellDef="let element">
+        <button mat-raised-button color="accent" (click)="openAdSetDialog('Add', {}, element.id)">Create AdSet</button>
         </td>
-      </ng-container> -->
+      </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

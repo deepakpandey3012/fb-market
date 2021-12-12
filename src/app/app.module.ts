@@ -24,6 +24,9 @@ import { CampaignDialogBoxComponent } from './components/campaigns/campaign-dial
 import { FbAdSetsComponent } from './components/adsets/fb-ad-sets/fb-ad-sets.component';
 import { AdSetDialogBoxComponent } from './components/adsets/adset-dialog-box/adset-dialog-box.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { FbAdsComponent } from './components/ads/fb-ads/fb-ads.component';
+import { AdsDialogBoxComponent } from './components/ads/ads-dialog-box/ads-dialog-box.component';
+import { AdCreativeDialogBoxComponent } from './components/ads/ad-creative-dialog-box/ad-creative-dialog-box.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,10 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     FbAdCampaignsComponent,
     CampaignDialogBoxComponent,
     FbAdSetsComponent,
-    AdSetDialogBoxComponent
+    AdSetDialogBoxComponent,
+    FbAdsComponent,
+    AdsDialogBoxComponent,
+    AdCreativeDialogBoxComponent
   ],
   imports: [
     BrowserModule,

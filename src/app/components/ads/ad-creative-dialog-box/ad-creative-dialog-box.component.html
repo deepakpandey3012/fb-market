@@ -1,0 +1,23 @@
+<!-- dialog-box.component.html -->
+<h3 mat-dialog-title>Add an Creative to the Ad</h3>
+
+<div mat-dialog-content>
+  <mat-form-field style="width: 400px;">
+    <input placeholder="Enter your Page Id" matInput [(ngModel)]="local_data.pageId" [required]="true">
+  </mat-form-field>
+
+  <mat-form-field style="width: 400px;">
+    <input placeholder="Name" matInput [(ngModel)]="local_data.name" [required]="true">
+  </mat-form-field>
+
+  <mat-form-field style="width: 400px;">
+    <input placeholder="Message" matInput [(ngModel)]="local_data.message" [required]="true">
+  </mat-form-field>
+    
+  <input type="file" id="img" name="img"  (change)="getBase64($event)">
+  
+</div>
+<div mat-dialog-actions style="padding-left: 250px;">
+  <button mat-raised-button (click)="doAction()" color="warn">{{action}}</button>
+  <button mat-raised-button (click)="closeDialog()">Cancel</button>
+</div>
