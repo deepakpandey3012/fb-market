@@ -63,4 +63,8 @@ export class CampaignService {
   createCreative(data){
     return this.http.post(this.postCreativeUrl, data);
   }
+
+  createAd(data){
+    return this.http.post(this.postAdsUrl, data);
+  }
 }

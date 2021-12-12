@@ -46,6 +46,7 @@ export class AdCreativeDialogBoxComponent {
     reader.readAsDataURL(file);
     reader.onload = function () {
       me.selectedFile = reader.result;
+      me.selectedFile = me.selectedFile.split(",")[1];
     };
     reader.onerror = function (error) {
       console.log('Error: ', error);

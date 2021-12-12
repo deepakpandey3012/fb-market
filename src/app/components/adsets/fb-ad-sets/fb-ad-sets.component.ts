@@ -152,14 +152,14 @@ export class FbAdSetsComponent implements OnInit, OnDestroy {
 
     this.campaignService.createCreative(row_obj).subscribe(result=>{
       if(result){
-        console.log(result);
-        // this.openAdsDialog(action, row_obj);
+        row_obj.creativeId = result['id'];
+        this.openAdsDialog(action, row_obj);
       }
     });
   }
 
   openAdsDialog(action:any, obj:any) {
-    let creativeId = obj.creative_id;
+    let creativeId = obj.creativeId;
     let adsetId = obj.adset_id;
     if(action == 'Add'){
       obj = {};
@@ -188,9 +188,9 @@ export class FbAdSetsComponent implements OnInit, OnDestroy {
     let action = row_obj.action;
     delete row_obj.action;
 
-    this.campaignService.createCreative(row_obj).subscribe(result=>{
+    this.campaignService.createAd(row_obj).subscribe(result=>{
       if(result){
-        this.openAdsDialog(action, row_obj);
+        console.log(result, 'ok');
       }
     });
   }
