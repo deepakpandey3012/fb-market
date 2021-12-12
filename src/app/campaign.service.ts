@@ -13,6 +13,7 @@ export class CampaignService {
 
   getDefaultCampaignsUrl = "http://127.0.0.1:8000/campaign/";
   getDefaultAdsetsUrl = "http://127.0.0.1:8000/adset/";
+  getAllAdsUrl = "http://127.0.0.1:8000/ads/";
   postDefaultCampaignsUrl = "http://127.0.0.1:8000/campaign/";
   postAdsetUrl = "http://127.0.0.1:8000/adset/";
   sendCredentialsUrl = "http://127.0.0.1:8000/campaign/accountSecrets";
@@ -42,6 +43,17 @@ export class CampaignService {
       return this.http.get(`${this.getDefaultAdsetsUrl}?date_preset=${preSet}&time_range={"since":"${dateRange[0]}","until":"${dateRange[1]}"}`);
     }
      return this.http.get(`${this.getDefaultAdsetsUrl}`);
+  }
+
+  getAllAds(dateRange: string[], preSet){
+    if(dateRange.length!=0 && !preSet){
+      return this.http.get(`${this.getAllAdsUrl}?time_range={"since":"${dateRange[0]}","until":"${dateRange[1]}"}`);
+    }else if(dateRange.length==0 && preSet){
+      return this.http.get(`${this.getAllAdsUrl}?date_preset=${preSet}`);
+    }else if(dateRange.length!=0 && preSet){
+      return this.http.get(`${this.getAllAdsUrl}?date_preset=${preSet}&time_range={"since":"${dateRange[0]}","until":"${dateRange[1]}"}`);
+    }
+     return this.http.get(`${this.getAllAdsUrl}`);
   }
 
   createCampaign(data){

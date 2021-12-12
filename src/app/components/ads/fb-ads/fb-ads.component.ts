@@ -25,7 +25,9 @@ export interface AddAdsetData {
   styleUrls: ['./fb-ads.component.scss']
 })
 export class FbAdsComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'status', 'adset_name'];
+  displayedColumns: string[] = 
+  ['name', 'status', 'adset_name', 'adcreative_name', 'bid_amount', 'attribution_setting', 'reach',
+    'spend', 'frequency', 'created_time', 'updated_time'];
   preset: string;
   dateRange: string[] = [];
   isVerified: boolean = false;
@@ -65,11 +67,11 @@ export class FbAdsComponent implements OnInit {
     private campaignService: CampaignService) {}
 
   ngOnInit(){
-    this.getAdsets();
+    this.getAds();
   }
 
-  getAdsets(){
-    this.campaignService.getDefaultAdSets(this.dateRange, this.preset).subscribe(result=>{
+  getAds(){
+    this.campaignService.getAllAds(this.dateRange, this.preset).subscribe(result=>{
       this.ads = result;
       this.totalAdsCount = this.ads.length;
     });
@@ -82,13 +84,13 @@ export class FbAdsComponent implements OnInit {
     const endDate = moment(this.range.value.end, 'MM-DD-YYYY').format('YYYY-MM-DD');
     this.dateRange.push(startDate);
     this.dateRange.push(endDate);
-    this.getAdsets();
+    this.getAds();
   }
 
   onPresetchange(event){
     if(event.isUserInput) {
       this.preset = event.source.value;
-      this.getAdsets();
+      this.getAds();
     }
   }
 
