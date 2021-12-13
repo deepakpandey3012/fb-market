@@ -18,8 +18,10 @@
   </div>
 </form>
 
+<mat-spinner class="spinner" *ngIf="contentLoading"></mat-spinner>
+
 <!-- <div class="mat-elevation-z8 ad-campaigns"> -->
-<div class="mat-elevation-z8 ad-campaigns" *ngIf="isVerified">
+<div class="mat-elevation-z8 ad-campaigns" *ngIf="isVerified && !contentLoading">
   <button mat-raised-button color="accent" (click)="openCampaignDialog('Add',{})" style="position: fixed; top: 0; z-index: 100; ">Create</button>
 
   <div style="margin: 40px 0px;">

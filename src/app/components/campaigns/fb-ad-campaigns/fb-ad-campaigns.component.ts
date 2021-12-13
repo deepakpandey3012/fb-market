@@ -64,6 +64,8 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
   campaigns: any;
   totalCampaignsCount: number = 0;
 
+  contentLoading: boolean = false;
+
   preSets = [
     {value: 'today'},
     {value: 'yesterday'},
@@ -112,6 +114,7 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
     this.campaignService.getDefaultCampaigns(this.dateRange, this.preset).subscribe(result=>{
       this.campaigns = result;
       this.totalCampaignsCount = this.campaigns.length;
+      this.contentLoading = false;
     });
   }
 
@@ -123,6 +126,7 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
       this.campaignService.sendCredentials(credential).subscribe(result=>{
         if(result){
           this.isVerified = true;
+          this.contentLoading = true;
           this.campaignService.changeVerification(true);
           this.getCampaigns();
         }

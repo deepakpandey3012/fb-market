@@ -27,6 +27,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { FbAdsComponent } from './components/ads/fb-ads/fb-ads.component';
 import { AdsDialogBoxComponent } from './components/ads/ads-dialog-box/ads-dialog-box.component';
 import { AdCreativeDialogBoxComponent } from './components/ads/ad-creative-dialog-box/ad-creative-dialog-box.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { AdCreativeDialogBoxComponent } from './components/ads/ad-creative-dialo
     HttpClientModule,
     MatSlideToggleModule,
     MatTabsModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
