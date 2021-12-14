@@ -28,6 +28,16 @@ import { FbAdsComponent } from './components/ads/fb-ads/fb-ads.component';
 import { AdsDialogBoxComponent } from './components/ads/ads-dialog-box/ads-dialog-box.component';
 import { AdCreativeDialogBoxComponent } from './components/ads/ad-creative-dialog-box/ad-creative-dialog-box.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { CampaignComponent } from './components/campaign/campaign.component';
+import { LoginComponent } from './components/login/login.component';
+import {MatCardModule} from '@angular/material/card';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [
@@ -38,7 +48,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     AdSetDialogBoxComponent,
     FbAdsComponent,
     AdsDialogBoxComponent,
-    AdCreativeDialogBoxComponent
+    AdCreativeDialogBoxComponent,
+    NavBarComponent,
+    CampaignComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -61,9 +74,15 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatSlideToggleModule,
     MatTabsModule,
     NgxMatSelectSearchModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,
+    MatCardModule
   ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

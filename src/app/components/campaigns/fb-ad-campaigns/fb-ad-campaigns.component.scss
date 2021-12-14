@@ -1,10 +1,6 @@
+
 .full-width-table {
   width: 100%;
-}
-
-.ad-campaigns{
-  width: 80%;
-  margin: 20px auto;
 }
 
 .credentials-form {
@@ -13,12 +9,19 @@
   width: 100%;
 }
 
-.credentials-full-width {
-  width: 100%;
+.ad-campaigns{
+  width: 80%;
+  margin: 20px auto;
 }
 
 .spinner{
   position: absolute;
   top: 40%;
   left: 44%;
+}
+
+.create-button{
+  margin-left: 10%;
+  position: sticky;
+  top: 10%;
 }

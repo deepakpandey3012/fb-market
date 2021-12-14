@@ -1,0 +1,33 @@
+<div *ngIf="!isVerified">
+    <h2 style="padding-left: 25%; color:darkgrey;">Enter Credentials</h2>
+
+    <form (ngSubmit)="onAuthSubmit(heroForm.value)" #heroForm="ngForm" *ngIf="!isVerified">
+      
+      <div class="mat-elevation-z8 ad-campaigns" style="width: 50%;">
+        <mat-form-field class="credentials-full-width" appearance="fill">
+          <mat-label>Ad account Id</mat-label>
+          <input matInput placeholder="Enter you Fb Ad account Id" type="text" ngModel name="id" [required]="true">
+        </mat-form-field>
+      
+        <mat-form-field class="credentials-full-width" appearance="fill">
+          <mat-label>Access Token</mat-label>
+          <textarea matInput placeholder="Generate and Enter you Access Token here" ngModel name="token" [required]="true"></textarea>
+        </mat-form-field>
+      </div>
+      <div style="padding-left: 25%;">
+        <button mat-raised-button color="accent">Submit</button>
+      </div>
+    </form>
+</div>
+<div *ngIf="isVerified">
+    <mat-card class="verified-card">
+        <mat-card-title-group>
+          <mat-card-title>Verified</mat-card-title>
+          <mat-card-subtitle>Good to go!!</mat-card-subtitle>
+          <img mat-card-sm-image [src]="img_path" >
+        </mat-card-title-group>
+        <mat-card-content>
+          {{longText}}
+        </mat-card-content>
+      </mat-card>
+</div>

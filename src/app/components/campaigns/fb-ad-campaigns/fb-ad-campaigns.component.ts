@@ -8,6 +8,7 @@ import * as moment from 'moment';
 import { CampaignService } from 'src/app/campaign.service';
 import { AdSetDialogBoxComponent } from '../../adsets/adset-dialog-box/adset-dialog-box.component';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 export interface campaignData {
   id: number;
@@ -45,11 +46,6 @@ export interface AddAdsetData {
   countries: string[]; 
 }
 
-export class credentialsModel {
-  access_token: string;
-  account_id: string;
-}
-
 @Component({
   selector: 'app-fb-ad-campaigns',
   templateUrl: './fb-ad-campaigns.component.html',
@@ -59,7 +55,6 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['name', 'status', 'objective', 'action'];
   preset: string;
   dateRange: string[] = [];
-  isVerified: boolean = false;
 
   campaigns: any;
   totalCampaignsCount: number = 0;
@@ -86,7 +81,6 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
     {value: 'this_year'},
   ];
 
-  tempVerified = true;
 
   @ViewChild(MatTable, { static: true })table!: MatTable<any>;
 
@@ -95,15 +89,21 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
     end: new FormControl()
   });
 
-  verified: boolean;
   subscription: Subscription;
 
   constructor(
     public dialog: MatDialog,
-    private campaignService: CampaignService) {}
+    private campaignService: CampaignService,
+    private router: Router) {}
 
   ngOnInit(){
-    this.subscription = this.campaignService.currentVerification.subscribe(data => this.verified = data);
+    this.subscription = this.campaignService.currentVerification.subscribe(data => {
+      if(data){
+        this.getCampaigns();
+      }else{
+      this.router.navigate(['/']);
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -111,27 +111,12 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
   }
 
   getCampaigns(){
+    this.contentLoading = true;
     this.campaignService.getDefaultCampaigns(this.dateRange, this.preset).subscribe(result=>{
       this.campaigns = result;
       this.totalCampaignsCount = this.campaigns.length;
       this.contentLoading = false;
     });
-  }
-
-  onAuthSubmit(data){
-    if(data.token && data.id){
-      const credential = new credentialsModel();
-      credential.access_token = data.token;
-      credential.account_id = data.id;
-      this.campaignService.sendCredentials(credential).subscribe(result=>{
-        if(result){
-          this.isVerified = true;
-          this.contentLoading = true;
-          this.campaignService.changeVerification(true);
-          this.getCampaigns();
-        }
-      });
-    }
   }
 
   onDateChange(event: any): void {

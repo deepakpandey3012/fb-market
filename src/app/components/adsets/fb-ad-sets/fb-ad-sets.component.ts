@@ -8,6 +8,7 @@ import { CampaignService } from 'src/app/campaign.service';
 import { Subscription } from 'rxjs';
 import { AdsDialogBoxComponent } from '../../ads/ads-dialog-box/ads-dialog-box.component';
 import { AdCreativeDialogBoxComponent } from '../../ads/ad-creative-dialog-box/ad-creative-dialog-box.component';
+import { Router } from '@angular/router';
 
 export interface campaignData {
   id: number;
@@ -48,10 +49,10 @@ export class FbAdSetsComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['name', 'status', 'campaign_name', 'billing_event', 'action'];
   preset: string;
   dateRange: string[] = [];
-  isVerified: boolean = false;
 
   adSets: any;
   totaladSetsCount: number = 0;
+  contentLoading: boolean = false;
 
   preSets = [
     {value: 'today'},
@@ -73,8 +74,6 @@ export class FbAdSetsComponent implements OnInit, OnDestroy {
     {value: 'this_year'},
   ];
 
-  
-  tempVerified = false;
   @ViewChild(MatTable, { static: true })table!: MatTable<any>;
   @Input() datas: string;
   range = new FormGroup({
@@ -82,16 +81,21 @@ export class FbAdSetsComponent implements OnInit, OnDestroy {
     end: new FormControl()
   });
 
-  verified: boolean;
   subscription: Subscription;
   
   constructor(
     public dialog: MatDialog,
-    private campaignService: CampaignService) {}
+    private campaignService: CampaignService,
+    private router: Router) {}
 
   ngOnInit(){
-    this.subscription = this.campaignService.currentVerification.subscribe(data => this.verified = data);
-    this.getAdsets();
+    this.subscription = this.campaignService.currentVerification.subscribe(data => {
+      if(data){
+        this.getAdsets();
+      }else{
+      this.router.navigate(['/']);
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -99,9 +103,11 @@ export class FbAdSetsComponent implements OnInit, OnDestroy {
   }
 
   getAdsets(){
+    this.contentLoading = true;
     this.campaignService.getDefaultAdSets(this.dateRange, this.preset).subscribe(result=>{
       this.adSets = result;
       this.totaladSetsCount = this.adSets.length;
+      this.contentLoading = false;
     });
   }
 

@@ -1,4 +1,6 @@
-<div class="mat-elevation-z8 ad-sets">
+<mat-spinner class="spinner" *ngIf="contentLoading"></mat-spinner>
+
+<div class="mat-elevation-z8 ad-sets" *ngIf="!contentLoading">
   <!-- <div class="mat-elevation-z8 ad-sets" *ngIf="isVerified"> -->
   
     <div style="margin: 40px 0px;">

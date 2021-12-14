@@ -5,6 +5,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 import { CampaignService } from 'src/app/campaign.service';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 export interface AddAdsetData {
   campaign_id: string;
@@ -34,6 +36,7 @@ export class FbAdsComponent implements OnInit {
 
   ads: any;
   totalAdsCount: number = 0;
+  contentLoading: boolean = false;
 
   preSets = [
     {value: 'today'},
@@ -62,18 +65,29 @@ export class FbAdsComponent implements OnInit {
     end: new FormControl()
   });
 
+  subscription: Subscription;
+
   constructor(
     public dialog: MatDialog,
-    private campaignService: CampaignService) {}
+    private campaignService: CampaignService,
+    private router: Router) {}
 
   ngOnInit(){
-    this.getAds();
+    this.subscription = this.campaignService.currentVerification.subscribe(data => {
+      if(data){
+        this.getAds();
+      }else{
+      this.router.navigate(['/']);
+      }
+    });
   }
 
   getAds(){
+    this.contentLoading = true;
     this.campaignService.getAllAds(this.dateRange, this.preset).subscribe(result=>{
       this.ads = result;
       this.totalAdsCount = this.ads.length;
+      this.contentLoading = false;
     });
   }
 
