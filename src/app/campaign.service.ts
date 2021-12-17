@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,9 @@ export class CampaignService {
   postCreativeUrl = "http://127.0.0.1:8000/ads/adCreative/";
   postAdsUrl = "http://127.0.0.1:8000/ads/";
 
-  constructor(private http: HttpClient) {   }
+  constructor(
+    private http: HttpClient,
+    private snackBar: MatSnackBar) {   }
 
   getDefaultCampaigns(dateRange: string[], preSet){
     if(dateRange.length!=0 && !preSet){
@@ -56,9 +59,17 @@ export class CampaignService {
      return this.http.get(`${this.getAllAdsUrl}`);
   }
 
+  getCampaignById(campaignId: string){
+     return this.http.get(`${this.getDefaultCampaignsUrl}${campaignId}`);
+  }
+
   createCampaign(data){
     return this.http.post(this.postDefaultCampaignsUrl, data);
  }
+
+ updateCampaign(data){
+  return this.http.put(`${this.postDefaultCampaignsUrl}${data['id']}/`, data);
+}
 
  createAdSet(data){
   return this.http.post(this.postAdsetUrl, data);
@@ -78,5 +89,13 @@ export class CampaignService {
 
   createAd(data){
     return this.http.post(this.postAdsUrl, data);
+  }
+
+
+  // Shared Methods
+  openSnackBar(msg:string) {
+    this.snackBar.open(msg, '', {
+      duration: 3000,
+    });
   }
 }

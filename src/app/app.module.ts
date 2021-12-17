@@ -38,6 +38,8 @@ import { CampaignComponent } from './components/campaign/campaign.component';
 import { LoginComponent } from './components/login/login.component';
 import {MatCardModule} from '@angular/material/card';
 import { CookieService } from 'ngx-cookie-service';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -80,7 +82,9 @@ import { CookieService } from 'ngx-cookie-service';
     MatSidenavModule,
     MatIconModule,
     MatListModule,
-    MatCardModule
+    MatCardModule,
+    MatSnackBarModule,
+    MatTooltipModule,
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

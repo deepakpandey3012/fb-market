@@ -196,6 +196,7 @@ export class FbAdSetsComponent implements OnInit, OnDestroy {
 
     this.campaignService.createAd(row_obj).subscribe(result=>{
       if(result){
+        this.campaignService.openSnackBar('Ads added successfully.');
         console.log(result, 'ok');
       }
     });

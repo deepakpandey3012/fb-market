@@ -1,7 +1,7 @@
-import {  Component, Inject, Optional } from '@angular/core';
+import {  Component, Inject, OnInit, Optional } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { CampaignService } from 'src/app/campaign.service';
 
 export interface AddcampaignData {
   name: string;
@@ -20,17 +20,10 @@ export interface AddcampaignData {
   templateUrl: './campaign-dialog-box.component.html',
   styleUrls: ['./campaign-dialog-box.component.scss']
 })
-export class CampaignDialogBoxComponent {
+export class CampaignDialogBoxComponent implements OnInit{
 
   action:string;
   local_data:any;
-
-  selectedObjective: string;
-
-  campaignBudgetLabel: string = 'daily_budget';
-  bidStrategy: string = 'LOWEST_COST_WITHOUT_CAP';
-  campaignBudgetAmount: number = 1;
-  spendingBudgetCapAmount: number;
 
   objectives = [
     {value: 'APP_INSTALLS'},
@@ -72,34 +65,59 @@ export class CampaignDialogBoxComponent {
   selectedSpecialCategory = [];
   isOptimizationChecked: boolean = false;
   isSpendingLimitChecked: boolean = false;
+  isStatusChecked: boolean = false;
+  statusEditable: boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<CampaignDialogBoxComponent>,
+    private campaignService: CampaignService,
     //@Optional() is used to prevent error if no data is passed
     @Optional() @Inject(MAT_DIALOG_DATA) public data: AddcampaignData) {
     this.local_data = {...data};
     this.action = this.local_data.action;
+    this.statusEditable = (this.local_data.status == 'ACTIVE' || this.local_data.status == 'PAUSED')? true: false;
   }
 
-  doAction(){
-    if(this.selectedObjective && this.local_data.name){
-      this.local_data.objective = this.selectedObjective;
-      this.local_data.special_ad_categories = this.selectedSpecialCategory;
-      this.local_data.campaign_budget_optimization = this.isOptimizationChecked;
-      this.local_data.campaign_budget_label = this.campaignBudgetLabel;
-      this.local_data.campaign_budget_amount = this.campaignBudgetAmount*100;
-      this.local_data.spend_cap = this.isSpendingLimitChecked? this.spendingBudgetCapAmount*100: undefined;
-      this.local_data.bid_strategy = this.bidStrategy;
-      this.dialogRef.close({event:this.action,data:this.local_data});
+  ngOnInit(): void {
+    if(this.action == 'Add'){
+      this.local_data.campaign_budget_label = 'daily_budget';
+      this.local_data.campaign_budget_amount = 1;
+      this.local_data.bid_strategy = 'LOWEST_COST_WITHOUT_CAP';
+    }else if(this.action == 'Update'){
+      this.campaignService.getCampaignById(this.local_data['id']).subscribe(result=>{
+        this.local_data = result;
+
+        if(this.statusEditable){
+          this.isStatusChecked = this.local_data.status == 'ACTIVE'? true: false;
+        }
+        this.isSpendingLimitChecked = this.local_data?.spend_cap;
+        if(this.local_data.daily_budget){
+          this.local_data.campaign_budget_label = 'daily_budget';
+          this.local_data.campaign_budget_amount = this.local_data.daily_budget;
+          this.local_data.campaign_budget_optimization = true;
+        }else if(this.local_data.lifetime_budget){
+          this.local_data.campaign_budget_label = 'lifetime_budget';
+          this.local_data.campaign_budget_amount = this.local_data.lifetime_budget;
+          this.local_data.campaign_budget_optimization = true;
+        }
+        
+        if(this.local_data.campaign_budget_amount)
+          this.local_data.campaign_budget_amount /=100;
+        if(this.local_data.spend_cap)
+          this.local_data.spend_cap /= 100;
+      });
     }
   }
 
-  optimizationToggle(event: MatSlideToggleChange) {
-    this.isOptimizationChecked = event.checked;
-  }
-
-  spendingLimitToggle(event: MatSlideToggleChange) {
-    this.isSpendingLimitChecked = event.checked;
+  doAction(){
+    if(this.local_data.objective && this.local_data.name){
+      this.local_data.campaign_budget_amount *= 100;
+      this.local_data.spend_cap = this.isSpendingLimitChecked? this.local_data.spend_cap*100: undefined;
+      if(this.statusEditable){
+        this.local_data.status = this.isStatusChecked? 'ACTIVE': 'PAUSED';
+      }
+      this.dialogRef.close({event:this.action,data:this.local_data});
+    }
   }
 
   closeDialog(){

@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
 export interface campaignData {
-  id: number;
+  id: String;
   name: string;
   status: string;
   objective: string;
@@ -98,11 +98,12 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
 
   ngOnInit(){
     this.subscription = this.campaignService.currentVerification.subscribe(data => {
-      if(data){
-        this.getCampaigns();
-      }else{
-      this.router.navigate(['/']);
-      }
+      this.getCampaigns();
+      // if(data){
+      //   this.getCampaigns();
+      // }else{
+      // this.router.navigate(['/']);
+      // }
     });
   }
 
@@ -136,11 +137,6 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
     }
   }
 
-  
-  openAdSet(element){
-    console.log(element);
-  }
-
   openCampaignDialog(action: any,obj: any) {
     obj.action = action;
     const dialogRef = this.dialog.open(CampaignDialogBoxComponent, {
@@ -152,9 +148,27 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
       if(result.event == 'Add'){
         this.addCampaign(result);
       }
-      // else if(result.event == 'Update'){
-      //   this.updateRowData(result.data);
-      // }
+      else if(result.event == 'Update'){
+        this.updateCampaign(result);
+      }
+    });
+  }
+
+  updateCampaign(campaign_result){
+    let row_obj = campaign_result.data;
+    delete row_obj.action;
+    row_obj = {
+      ...row_obj,
+      [row_obj.campaign_budget_label]: row_obj.campaign_budget_amount
+    }
+    delete row_obj.campaign_budget_label;
+    delete row_obj.campaign_budget_amount;
+
+    this.campaignService.updateCampaign(row_obj).subscribe(result=>{
+      if(result){
+        this.campaignService.openSnackBar('Ad Campaign updated successfully.');
+        this.getCampaigns();
+      }
     });
   }
 
@@ -168,9 +182,10 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
     delete row_obj.campaign_budget_label;
     delete row_obj.campaign_budget_amount;
 
+    console.log(row_obj);
     this.campaignService.createCampaign(row_obj).subscribe(result=>{
       if(result){
-        console.log(result['id']);
+        this.campaignService.openSnackBar('Ad Campaign added successfully.');
         this.getCampaigns();
         this.openAdSetDialog(campaign_result.event, {}, result['id']);
       }
@@ -209,6 +224,7 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
 
     this.campaignService.createAdSet(row_obj).subscribe(result=>{
       if(result){
+        this.campaignService.openSnackBar('Ad Sets added successfully.');
         console.log(result);
       }
     });
