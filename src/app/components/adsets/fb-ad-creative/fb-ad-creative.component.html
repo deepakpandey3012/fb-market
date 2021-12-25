@@ -1,0 +1,47 @@
+<mat-spinner class="spinner" *ngIf="contentLoading"></mat-spinner>
+
+<div class="mat-elevation-z8 ad-sets" *ngIf="!contentLoading">
+  <!-- <div class="mat-elevation-z8 ad-sets" *ngIf="isVerified"> -->
+  
+    <div style="margin: 40px 0px;">
+    
+      <table mat-table [dataSource]="adCreatives" #mytable class="full-width-table" aria-label="Elements">
+  
+        <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
+  
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name" style="width: 50px;">
+          <th mat-header-cell *matHeaderCellDef> AdCreative Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+        
+        <!-- Message Column -->
+        <ng-container matColumnDef="message" style="width: 100px;">
+          <th mat-header-cell *matHeaderCellDef> Message </th>
+          <td mat-cell *matCellDef="let element"> {{element.object_story_spec.link_data.message}} </td>
+        </ng-container>
+
+        <!-- Image Column -->
+        <ng-container matColumnDef="image">
+          <th mat-header-cell *matHeaderCellDef> Image </th>
+          <td mat-cell *matCellDef="let element"> <img [src]="element.image_url" style="height: 100px; width: 125px;"/> </td>
+        </ng-container>
+  
+        <!-- Action Column -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef> Action </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-icon matTooltip="Edit" class="hover-effect" style="margin-left: 15px;" (click)="openAdCreativeEditDialog('Update', element)">edit</mat-icon>
+          </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+    
+    <h4 style="color: darkgrey;">Results from {{totalAdCreativeCount}} Ad Assets</h4>
+  </div>
+  
+  

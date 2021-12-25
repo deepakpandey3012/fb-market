@@ -9,7 +9,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./ad-creative-dialog-box.component.scss']
 })
 // export class AdSetDialogBoxComponent implements OnInit{
-export class AdCreativeDialogBoxComponent {
+export class AdCreativeDialogBoxComponent implements OnInit {
 
   action:string;
   local_data:any;
@@ -19,6 +19,7 @@ export class AdCreativeDialogBoxComponent {
   ////////////////////////////////////////
   ///////////////////////////////////////
 
+  isUpdate: boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<AdCreativeDialogBoxComponent>,
@@ -31,10 +32,20 @@ export class AdCreativeDialogBoxComponent {
   ///////////////////////////////////
   ///////////////////////////////////////
 
-  doAction(){
-    if(this.local_data.name && this.local_data.pageId){
-      this.local_data.image = this.selectedFile;
+  ngOnInit(): void {
+    this.isUpdate = this.action == 'Update'? true: false;
+    if(this.isUpdate){
+      this.local_data.message = this.local_data.object_story_spec.link_data.message;
+    }
+  }
 
+  doAction(){
+    if(this.local_data.name){
+      this.local_data.image = this.selectedFile;
+      if(this.isUpdate){
+        delete this.local_data.image_url;
+        delete this.local_data.object_story_spec;
+      }
       this.dialogRef.close({event:this.action,data:this.local_data});
     }
   }

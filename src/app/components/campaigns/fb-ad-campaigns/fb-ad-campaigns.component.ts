@@ -230,12 +230,4 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
     });
   }
 
-  // updateRowData(row_obj: any){
-  //   this.dataSource = this.dataSource.filter((value,key)=>{
-  //     if(value.id == row_obj.id){
-  //       value.name = row_obj.name;
-  //     }
-  //     return true;
-  //   });
-  // }
 }

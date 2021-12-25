@@ -40,6 +40,7 @@ import {MatCardModule} from '@angular/material/card';
 import { CookieService } from 'ngx-cookie-service';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { FbAdCreativesComponent } from './components/adsets/fb-ad-creative/fb-ad-creative.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     AdCreativeDialogBoxComponent,
     NavBarComponent,
     CampaignComponent,
-    LoginComponent
+    LoginComponent,
+    FbAdCreativesComponent
   ],
   imports: [
     BrowserModule,

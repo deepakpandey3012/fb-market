@@ -37,7 +37,9 @@
       <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef> Action </th>
         <td mat-cell *matCellDef="let element">
-        <button mat-raised-button color="accent" (click)="openAdCreativeDialog('Add', element)">Create Ad</button>
+          <mat-icon matTooltip="Create an Ad" class="hover-effect" (click)="openAdCreativeDialog('Add', element)">add_circle_outline</mat-icon>
+          <mat-icon matTooltip="Edit" class="hover-effect" style="margin-left: 15px;" (click)="openAdSetEditDialog('Update', element)">edit</mat-icon>
+          <mat-icon matTooltip="View ad-assets" class="hover-effect" style="margin-left: 15px;" (click)="viewAdAssets(element)">input</mat-icon>
         </td>
       </ng-container>
 

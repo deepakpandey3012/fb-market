@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 import { AdsDialogBoxComponent } from '../../ads/ads-dialog-box/ads-dialog-box.component';
 import { AdCreativeDialogBoxComponent } from '../../ads/ad-creative-dialog-box/ad-creative-dialog-box.component';
 import { Router } from '@angular/router';
+import { AdSetDialogBoxComponent } from '../adset-dialog-box/adset-dialog-box.component';
 
 export interface campaignData {
   id: number;
@@ -45,7 +46,7 @@ export interface AddAdsetData {
   templateUrl: './fb-ad-sets.component.html',
   styleUrls: ['./fb-ad-sets.component.scss']
 })
-export class FbAdSetsComponent implements OnInit, OnDestroy {
+export class FbAdSetsComponent implements OnInit {
   displayedColumns: string[] = ['name', 'status', 'campaign_name', 'billing_event', 'action'];
   preset: string;
   dateRange: string[] = [];
@@ -89,18 +90,19 @@ export class FbAdSetsComponent implements OnInit, OnDestroy {
     private router: Router) {}
 
   ngOnInit(){
-    this.subscription = this.campaignService.currentVerification.subscribe(data => {
-      if(data){
-        this.getAdsets();
-      }else{
-      this.router.navigate(['/']);
-      }
-    });
+    // this.subscription = this.campaignService.currentVerification.subscribe(data => {
+    //   if(data){
+    //     this.getAdsets();
+    //   }else{
+    //   this.router.navigate(['/']);
+    //   }
+    // });
+    this.getAdsets();
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
+  // ngOnDestroy() {
+  //   this.subscription.unsubscribe();
+  // }
 
   getAdsets(){
     this.contentLoading = true;
@@ -126,6 +128,34 @@ export class FbAdSetsComponent implements OnInit, OnDestroy {
       this.preset = event.source.value;
       this.getAdsets();
     }
+  }
+
+  openAdSetEditDialog(action:any, obj:any) {
+    obj.action = action;
+    const adSetEditDialogRef = this.dialog.open(AdSetDialogBoxComponent, {
+      width: '460px',
+      data:obj
+    });
+
+    adSetEditDialogRef.afterClosed().subscribe(result => {
+      if(result.event == 'Update'){
+        this.updateAdSet(result);
+      }
+    });
+  }
+
+  updateAdSet(adset_result){
+    let row_obj = adset_result.data;
+    delete row_obj.action;
+
+    console.log(row_obj);
+    this.contentLoading = true;
+    this.campaignService.updateAdSet(row_obj).subscribe(result=>{
+      if(result){
+        this.getAdsets();
+        this.campaignService.openSnackBar('AdSet updated successfully.');
+      }
+    });
   }
 
   openAdCreativeDialog(action:any, obj:any) {
@@ -200,6 +230,11 @@ export class FbAdSetsComponent implements OnInit, OnDestroy {
         console.log(result, 'ok');
       }
     });
+  }
+
+  
+  viewAdAssets(obj: any){
+    this.router.navigate([`/adCreatives/${obj['id']}`]);
   }
 
 }

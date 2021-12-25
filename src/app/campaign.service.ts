@@ -12,6 +12,7 @@ export class CampaignService {
   private verificationSource = new BehaviorSubject(false);
   currentVerification = this.verificationSource.asObservable();
 
+  localhost = "http://127.0.0.1:8000";
   getDefaultCampaignsUrl = "http://127.0.0.1:8000/campaign/";
   getDefaultAdsetsUrl = "http://127.0.0.1:8000/adset/";
   getAllAdsUrl = "http://127.0.0.1:8000/ads/";
@@ -59,9 +60,17 @@ export class CampaignService {
      return this.http.get(`${this.getAllAdsUrl}`);
   }
 
+  getAdCreativeByAdsetId(adsetId){
+     return this.http.get(`${this.localhost}/adset/${adsetId}/adcreatives`);
+  }
+
   getCampaignById(campaignId: string){
      return this.http.get(`${this.getDefaultCampaignsUrl}${campaignId}`);
   }
+
+  getAdsetById(adsetId: string){
+    return this.http.get(`${this.getDefaultAdsetsUrl}${adsetId}`);
+ }
 
   createCampaign(data){
     return this.http.post(this.postDefaultCampaignsUrl, data);
@@ -75,6 +84,10 @@ export class CampaignService {
   return this.http.post(this.postAdsetUrl, data);
 }
 
+updateAdSet(data){
+  return this.http.put(`${this.postAdsetUrl}${data['id']}`, data);
+}
+
  sendCredentials(data){
   return this.http.post(this.sendCredentialsUrl, data);
   }
@@ -85,6 +98,10 @@ export class CampaignService {
 
   createCreative(data){
     return this.http.post(this.postCreativeUrl, data);
+  }
+
+  updateCreative(data){
+    return this.http.put(`${this.postCreativeUrl}${data['id']}`, data);
   }
 
   createAd(data){

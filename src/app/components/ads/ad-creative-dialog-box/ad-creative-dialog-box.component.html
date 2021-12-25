@@ -2,7 +2,7 @@
 <h3 mat-dialog-title>Add an Creative to the Ad</h3>
 
 <div mat-dialog-content>
-  <mat-form-field style="width: 400px;">
+  <mat-form-field style="width: 400px;" *ngIf="!isUpdate">
     <input placeholder="Enter your Page Id" matInput [(ngModel)]="local_data.pageId" [required]="true">
   </mat-form-field>
 

@@ -5,6 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { ReplaySubject, Subject, take, takeUntil } from 'rxjs';
+import { CampaignService } from 'src/app/campaign.service';
 
 
 export interface AddAdsetData {
@@ -20,7 +21,7 @@ export interface AddAdsetData {
   end_time: number;
   age_min: number; 
   age_max: number;
-  genders: number;
+  genders: number[];
   device_platforms: string[]; 
   // publisher_platforms: string[]; 
   countries: string[]; 
@@ -33,16 +34,13 @@ export interface AddAdsetData {
   styleUrls: ['./adset-dialog-box.component.scss']
 })
 // export class AdSetDialogBoxComponent implements OnInit{
-export class AdSetDialogBoxComponent {
+export class AdSetDialogBoxComponent implements OnInit{
 
   action:string;
   local_data:any;
 
   // adSetBudgetLabel: string = 'daily_budget';
   // adSetBudgetAmount: number = 1;
-  adSetgendertLabel: number = 0;
-  age_max: number = 65;
-  age_min: number = 18;
 
   bidAmount : number;
 
@@ -52,9 +50,8 @@ export class AdSetDialogBoxComponent {
   ];
 
   adSetgendertLabels = [
-    {DisplayName:'All', value: 0},
-    {DisplayName:'Male', value: 1},
-    {DisplayName:'Female', value: 2}
+    {DisplayName: 'Male', value: 1},
+    {DisplayName: 'Female', value: 2}
   ];
 
   optimizationGoals = [
@@ -325,6 +322,7 @@ export class AdSetDialogBoxComponent {
   // ];
 
   target_countries = new FormControl();
+  target_audience = new FormControl();
   target_device = new FormControl();
   target_publisher = new FormControl();
 
@@ -337,19 +335,46 @@ export class AdSetDialogBoxComponent {
   isDynamicCreativeChecked: boolean = false;
   startDate: number;
   endDate: number;
-
+  statusEditable: boolean = false;
+  isStatusChecked: boolean = false;
 
 
   ////////////////////////////////////////
   ///////////////////////////////////////
 
-
+  startDateFormCtrl = new FormControl();
+  endDateFormCtrl = new FormControl();
   constructor(
     public dialogRef: MatDialogRef<AdSetDialogBoxComponent>,
+    private campaignService: CampaignService,
     //@Optional() is used to prevent error if no data is passed
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any) {
     this.local_data = {...data};
     this.action = this.local_data.action;
+    this.statusEditable = (this.local_data.status == 'ACTIVE' || this.local_data.status == 'PAUSED')? true: false;
+  }
+
+  ngOnInit(): void {
+    if(this.action == 'Add'){
+      this.local_data.age_min = 18;
+      this.local_data.age_max = 65;
+    
+    }
+    else if(this.action == 'Update'){
+      this.campaignService.getAdsetById(this.local_data['id']).subscribe(result=> {
+        if(this.statusEditable){
+          this.isStatusChecked = this.local_data.status == 'ACTIVE'? true: false;
+        }
+
+        this.startDateFormCtrl.setValue(new Date(result['start_time']));
+        this.endDateFormCtrl.setValue(new Date(result['end_time']));
+        // this.local_data.genders = 0; // to be changed
+        this.local_data.age_min = result['targeting']['age_min'];
+        this.local_data.age_max = result['targeting']['age_max'];
+        this.local_data.countries =  result['targeting']['geo_locations']['countries'];
+        this.local_data.device_platforms = result['targeting']['device_platforms'];
+      });
+    }
   }
 
   ///////////////////////////////////
@@ -357,35 +382,15 @@ export class AdSetDialogBoxComponent {
 
   doAction(){
     if(this.local_data.name){
-      // this.local_data.adset_budget_label = this.adSetBudgetLabel;
-      // this.local_data.adset_budget_amount = this.adSetBudgetAmount*100;
-      this.local_data.is_dynamic_creative = this.isDynamicCreativeChecked;
-      this.local_data.optimization_goal = this.selectedOptimizationGoal;
-      this.local_data.billing_event = this.selectedBillingEvent;
-      this.local_data.bid_amount = this.bidAmount? this.bidAmount*100: undefined;
-      this.local_data.start_time = this.startDate;
-      this.local_data.end_time = this.endDate;
-      this.local_data.age_min = this.age_min;
-      this.local_data.age_max = this.age_max;
-      this.local_data.genders = this.adSetgendertLabel;
-      this.local_data.countries = this.selectedCountry;
-      this.local_data.device_platforms = this.selecteddevicePlatform;
-      // this.local_data.publisher_platforms = this.selectedpublisherPlatform;
+      if(this.statusEditable){
+        this.local_data.status = this.isStatusChecked? 'ACTIVE': 'PAUSED';
+      }
+      this.local_data.bid_amount = this.local_data.bid_amount? this.local_data.bid_amount*100: undefined;
+      this.local_data.start_time = this.local_data.start_time? Date.parse(`${this.startDateFormCtrl.value}`)/1000: undefined;
+      this.local_data.end_time = this.local_data.end_time? Date.parse(`${this.endDateFormCtrl.value}`)/1000: undefined;
 
       this.dialogRef.close({event:this.action,data:this.local_data});
     }
-  }
-
-  startDateEvent(type: string, dinput: MatDatepickerInputEvent<Date>) {
-    this.startDate = Date.parse(`${dinput.value}`)/1000;
-  }
-
-  endDateEvent(type: string, dinput: MatDatepickerInputEvent<Date>) {
-    this.endDate = Date.parse(`${dinput.value}`)/1000;
-  }
-
-  dynamicCreativeToggle(event: MatSlideToggleChange) {
-    this.isDynamicCreativeChecked = event.checked;
   }
 
   closeDialog(){
