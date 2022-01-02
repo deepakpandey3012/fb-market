@@ -3,11 +3,6 @@
 
 <div mat-dialog-content>
 
-  <!-- <div style="padding:0px 0px 20px 10px;">
-    <label style="padding-right: 150px ;"> Status</label>
-    <mat-slide-toggle (change)="optimizationToggle($event)"></mat-slide-toggle>
-  </div> -->
-
   <div style="padding:0px 0px 20px 10px;" *ngIf="statusEditable">
     <label style="padding-right: 150px ;"> Status</label>
     <mat-slide-toggle [(ngModel)]="isStatusChecked"></mat-slide-toggle>

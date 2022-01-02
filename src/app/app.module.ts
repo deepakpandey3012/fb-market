@@ -34,13 +34,14 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { CampaignComponent } from './components/campaign/campaign.component';
 import { LoginComponent } from './components/login/login.component';
 import {MatCardModule} from '@angular/material/card';
 import { CookieService } from 'ngx-cookie-service';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { FbAdCreativesComponent } from './components/adsets/fb-ad-creative/fb-ad-creative.component';
+import {MatChipsModule} from '@angular/material/chips';
+import { CustomLocationComponent } from './components/adsets/custom-locations/custom-locations.component';
 
 @NgModule({
   declarations: [
@@ -53,9 +54,9 @@ import { FbAdCreativesComponent } from './components/adsets/fb-ad-creative/fb-ad
     AdsDialogBoxComponent,
     AdCreativeDialogBoxComponent,
     NavBarComponent,
-    CampaignComponent,
     LoginComponent,
-    FbAdCreativesComponent
+    FbAdCreativesComponent,
+    CustomLocationComponent
   ],
   imports: [
     BrowserModule,
@@ -87,6 +88,7 @@ import { FbAdCreativesComponent } from './components/adsets/fb-ad-creative/fb-ad
     MatCardModule,
     MatSnackBarModule,
     MatTooltipModule,
+    MatChipsModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

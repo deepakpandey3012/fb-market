@@ -98,12 +98,12 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
 
   ngOnInit(){
     this.subscription = this.campaignService.currentVerification.subscribe(data => {
-      this.getCampaigns();
-      // if(data){
-      //   this.getCampaigns();
-      // }else{
-      // this.router.navigate(['/']);
-      // }
+      // this.getCampaigns();
+      if(data){
+        this.getCampaigns();
+      }else{
+      this.router.navigate(['/']);
+      }
     });
   }
 

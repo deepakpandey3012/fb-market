@@ -2,8 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { FormControl, FormGroup } from '@angular/forms';
-import * as moment from 'moment';
 import { CampaignService } from 'src/app/campaign.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -35,14 +33,7 @@ export class FbAdCreativesComponent implements OnInit {
 
   ngOnInit(){
     this.adsetId = this.router.snapshot.params['id'];
-    this.subscription = this.campaignService.currentVerification.subscribe(data => {
-      // if(data){
-      //   this.getAdCreatives();
-      // }else{
-      // this.router.navigate(['/']);
-      // }
-      this.getAdCreatives();
-    });
+    this.getAdCreatives();
   }
 
   getAdCreatives(){

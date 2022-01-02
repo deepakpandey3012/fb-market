@@ -1,11 +1,8 @@
-import {  AfterViewInit, Component, Inject, OnDestroy, OnInit, Optional, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSelect } from '@angular/material/select';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { ReplaySubject, Subject, take, takeUntil } from 'rxjs';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CampaignService } from 'src/app/campaign.service';
+import { CustomLocationComponent } from '../custom-locations/custom-locations.component';
 
 
 export interface AddAdsetData {
@@ -22,9 +19,16 @@ export interface AddAdsetData {
   age_min: number; 
   age_max: number;
   genders: number[];
-  device_platforms: string[]; 
+  device_platforms: string[];
   // publisher_platforms: string[]; 
   countries: string[]; 
+}
+
+export interface AddAdsetData {
+  latitude: number;
+  longitude: number;
+  radius: number;
+  distance_unit: string;
 }
 
 
@@ -314,6 +318,11 @@ export class AdSetDialogBoxComponent implements OnInit{
     {value: 'mobile'},
   ];
 
+  distanceUnits = [
+    {value: 'kilometer'},
+    {value: 'mile'},
+  ];
+
   // publisherPlatforms = [
   //   {value: 'facebook'},
   //   {value: 'audience_network'},
@@ -344,9 +353,13 @@ export class AdSetDialogBoxComponent implements OnInit{
 
   startDateFormCtrl = new FormControl();
   endDateFormCtrl = new FormControl();
+  
+  customLocations: AddAdsetData[] = [];
+
   constructor(
     public dialogRef: MatDialogRef<AdSetDialogBoxComponent>,
     private campaignService: CampaignService,
+    public dialog: MatDialog,
     //@Optional() is used to prevent error if no data is passed
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any) {
     this.local_data = {...data};
@@ -368,10 +381,15 @@ export class AdSetDialogBoxComponent implements OnInit{
 
         this.startDateFormCtrl.setValue(new Date(result['start_time']));
         this.endDateFormCtrl.setValue(new Date(result['end_time']));
-        // this.local_data.genders = 0; // to be changed
+        this.local_data.genders = result['targeting']['genders'];
         this.local_data.age_min = result['targeting']['age_min'];
         this.local_data.age_max = result['targeting']['age_max'];
         this.local_data.countries =  result['targeting']['geo_locations']['countries'];
+        if(result['targeting']['geo_locations']['custom_locations'].length){
+          this.local_data.has_custom_locations = true;
+          this.customLocations = result['targeting']['geo_locations']['custom_locations'];
+        }
+       
         this.local_data.device_platforms = result['targeting']['device_platforms'];
       });
     }
@@ -379,6 +397,28 @@ export class AdSetDialogBoxComponent implements OnInit{
 
   ///////////////////////////////////
   ///////////////////////////////////////
+
+  openAdSetEditDialog() {
+    const adSetEditDialogRef = this.dialog.open(CustomLocationComponent, {
+      width: '460px'
+    });
+
+    adSetEditDialogRef.afterClosed().subscribe(result => {
+      if(result.event == 'Add'){
+        this.addCustomLocation(result);
+      }
+    });
+  }
+
+  addCustomLocation(result){
+    let row_obj = result.data;
+    delete row_obj.action;
+    this.customLocations.push(row_obj);
+  }
+
+  remove(location: AddAdsetData){
+    this.customLocations = this.customLocations.filter(loc => loc!=location);
+  }
 
   doAction(){
     if(this.local_data.name){
@@ -388,7 +428,7 @@ export class AdSetDialogBoxComponent implements OnInit{
       this.local_data.bid_amount = this.local_data.bid_amount? this.local_data.bid_amount*100: undefined;
       this.local_data.start_time = this.local_data.start_time? Date.parse(`${this.startDateFormCtrl.value}`)/1000: undefined;
       this.local_data.end_time = this.local_data.end_time? Date.parse(`${this.endDateFormCtrl.value}`)/1000: undefined;
-
+      this.local_data.custom_locations = this.customLocations;
       this.dialogRef.close({event:this.action,data:this.local_data});
     }
   }

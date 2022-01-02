@@ -1,0 +1,31 @@
+<!-- dialog-box.component.html -->
+<h3 mat-dialog-title>Add an Custom location</h3>
+
+<div mat-dialog-content>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Latitude</mat-label>
+    <input matInput type="number" [(ngModel)]="local_data.latitude">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Longitude</mat-label>
+    <input matInput type="number" [(ngModel)]="local_data.longitude">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Radius</mat-label>
+    <input matInput type="number" [(ngModel)]="local_data.radius">
+  </mat-form-field>
+  <label style="padding:0px 0px 20px 10px;">Distance Unit</label>
+  <mat-form-field appearance="fill">
+    <mat-select [(ngModel)]="local_data.distance_unit" name="SelectedUnit">
+      <mat-option *ngFor="let obj of distanceUnits" [value]="obj.value">
+        {{obj.value}}
+      </mat-option>
+    </mat-select> 
+  </mat-form-field>
+  
+</div>
+<div mat-dialog-actions style="padding-left: 250px;">
+  <button mat-raised-button (click)="doAction()" color="warn">{{action}}</button>
+  <button mat-raised-button (click)="closeDialog()">Cancel</button>
+</div>

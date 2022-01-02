@@ -1,6 +1,5 @@
 <div class="clr-top"></div>
 <mat-spinner class="spinner" *ngIf="contentLoading"></mat-spinner>
-<!-- <div class="mat-elevation-z8 ad-campaigns"> -->
 <div *ngIf="!contentLoading" style="position: relative;">
   <button mat-raised-button color="accent" (click)="openCampaignDialog('Add',{})" class="create-button">Create</button>
   <div class="mat-elevation-z8 ad-campaigns">

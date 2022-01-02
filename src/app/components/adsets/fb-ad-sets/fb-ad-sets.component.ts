@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -100,9 +100,9 @@ export class FbAdSetsComponent implements OnInit {
     this.getAdsets();
   }
 
-  // ngOnDestroy() {
-  //   this.subscription.unsubscribe();
-  // }
+  ngOnDestroy() {
+    // this.subscription.unsubscribe();
+  }
 
   getAdsets(){
     this.contentLoading = true;

@@ -1,15 +1,10 @@
 <mat-spinner class="spinner" *ngIf="contentLoading"></mat-spinner>
 
 <div class="mat-elevation-z8 ad-sets" *ngIf="!contentLoading">
-  <!-- <div class="mat-elevation-z8 ad-sets" *ngIf="isVerified"> -->
   
     <div style="margin: 40px 0px;">
     
-      <table mat-table [dataSource]="adCreatives" #mytable class="full-width-table" aria-label="Elements">
-  
-        <!--- Note that these columns can be defined in any order.
-            The actual rendered columns are set as a property on the row definition" -->
-  
+      <table mat-table [dataSource]="adCreatives" #mytable class="full-width-table" aria-label="Elements">  
 
         <!-- Name Column -->
         <ng-container matColumnDef="name" style="width: 50px;">

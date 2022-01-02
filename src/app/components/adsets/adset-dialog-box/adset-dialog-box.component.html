@@ -89,6 +89,27 @@
       </mat-select>
     </mat-form-field>
 
+    <div style="padding:0px 0px 20px 10px;">
+      <label style="padding-right: 150px ;"> Add Custom Location</label>
+      <mat-slide-toggle [(ngModel)]="local_data.has_custom_locations"></mat-slide-toggle>
+    </div>
+    <div *ngIf="local_data.has_custom_locations">
+      <mat-form-field appearance="fill">
+        <mat-label>Locations</mat-label>
+        <mat-chip-list #chipList aria-label="Location selection">
+          <mat-chip
+            *ngFor="let location of customLocations"
+            (removed)="remove(location)">
+            {{location?.latitude+'/'+location?.longitude}}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+        </mat-chip-list>
+      </mat-form-field>
+      <mat-icon matTooltip="Add a Custom Location" class="hover-effect" style="margin-left: 46%;" (click)="openAdSetEditDialog()">add_to_queue</mat-icon>
+    </div>
+   
     <mat-form-field class="flex-container" appearance="fill">
       <mat-label>Device Platform</mat-label>
       <mat-select [formControl]="target_device" [(value)]="local_data.device_platforms" multiple>

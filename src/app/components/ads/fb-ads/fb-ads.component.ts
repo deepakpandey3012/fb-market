@@ -73,14 +73,14 @@ export class FbAdsComponent implements OnInit {
     private router: Router) {}
 
   ngOnInit(){
-    // this.subscription = this.campaignService.currentVerification.subscribe(data => {
-    //   if(data){
-    //     this.getAds();
-    //   }else{
-    //   this.router.navigate(['/']);
-    //   }
-    // });
-    this.getAds();
+    this.subscription = this.campaignService.currentVerification.subscribe(data => {
+      if(data){
+        this.getAds();
+      }else{
+      this.router.navigate(['/']);
+      }
+    });
+    // this.getAds();
   }
 
   getAds(){
