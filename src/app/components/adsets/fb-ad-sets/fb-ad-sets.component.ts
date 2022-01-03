@@ -107,6 +107,7 @@ export class FbAdSetsComponent implements OnInit {
       }
     );
     // this.getAdsets();
+    //lado
   }
 
   ngOnDestroy() {
