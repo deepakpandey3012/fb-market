@@ -44,10 +44,16 @@ export interface AddAdsetData {
 @Component({
   selector: 'app-fb-ad-sets',
   templateUrl: './fb-ad-sets.component.html',
-  styleUrls: ['./fb-ad-sets.component.scss']
+  styleUrls: ['./fb-ad-sets.component.scss'],
 })
 export class FbAdSetsComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'status', 'campaign_name', 'billing_event', 'action'];
+  displayedColumns: string[] = [
+    'name',
+    'status',
+    'campaign_name',
+    'billing_event',
+    'action',
+  ];
   preset: string;
   dateRange: string[] = [];
 
@@ -56,121 +62,130 @@ export class FbAdSetsComponent implements OnInit {
   contentLoading: boolean = false;
 
   preSets = [
-    {value: 'today'},
-    {value: 'yesterday'},
-    {value: 'this_month'},
-    {value: 'last_month'},
-    {value: 'this_quarter'},
-    {value: 'maximum'},
-    {value: 'last_3d'},
-    {value: 'last_7d'},
-    {value: 'last_14d'},
-    {value: 'last_28d'},
-    {value: 'last_30d'},
-    {value: 'last_90d'},
-    {value: 'last_quarter'},
-    {value: 'last_year'},
-    {value: 'this_week_mon_today'},
-    {value: 'this_week_sun_today'},
-    {value: 'this_year'},
+    { value: 'today' },
+    { value: 'yesterday' },
+    { value: 'this_month' },
+    { value: 'last_month' },
+    { value: 'this_quarter' },
+    { value: 'maximum' },
+    { value: 'last_3d' },
+    { value: 'last_7d' },
+    { value: 'last_14d' },
+    { value: 'last_28d' },
+    { value: 'last_30d' },
+    { value: 'last_90d' },
+    { value: 'last_quarter' },
+    { value: 'last_year' },
+    { value: 'this_week_mon_today' },
+    { value: 'this_week_sun_today' },
+    { value: 'this_year' },
   ];
 
-  @ViewChild(MatTable, { static: true })table!: MatTable<any>;
+  @ViewChild(MatTable, { static: true }) table!: MatTable<any>;
   @Input() datas: string;
   range = new FormGroup({
     start: new FormControl(),
-    end: new FormControl()
+    end: new FormControl(),
   });
 
   subscription: Subscription;
-  
+
   constructor(
     public dialog: MatDialog,
     private campaignService: CampaignService,
-    private router: Router) {}
+    private router: Router
+  ) {}
 
-  ngOnInit(){
-    // this.subscription = this.campaignService.currentVerification.subscribe(data => {
-    //   if(data){
-    //     this.getAdsets();
-    //   }else{
-    //   this.router.navigate(['/']);
-    //   }
-    // });
-    this.getAdsets();
+  ngOnInit() {
+    this.subscription = this.campaignService.currentVerification.subscribe(
+      (data) => {
+        if (data) {
+          this.getAdsets();
+        } else {
+          this.router.navigate(['/']);
+        }
+      }
+    );
+    // this.getAdsets();
   }
 
   ngOnDestroy() {
-    // this.subscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
-  getAdsets(){
+  getAdsets() {
     this.contentLoading = true;
-    this.campaignService.getDefaultAdSets(this.dateRange, this.preset).subscribe(result=>{
-      this.adSets = result;
-      this.totaladSetsCount = this.adSets.length;
-      this.contentLoading = false;
-    });
+    this.campaignService
+      .getDefaultAdSets(this.dateRange, this.preset)
+      .subscribe((result) => {
+        this.adSets = result;
+        this.totaladSetsCount = this.adSets.length;
+        this.contentLoading = false;
+      });
   }
 
   onDateChange(event: any): void {
     this.range.value.date = event;
     console.log(this.range.value.start);
-    const startDate = moment(this.range.value.start, 'MM-DD-YYYY').format('YYYY-MM-DD');
-    const endDate = moment(this.range.value.end, 'MM-DD-YYYY').format('YYYY-MM-DD');
+    const startDate = moment(this.range.value.start, 'MM-DD-YYYY').format(
+      'YYYY-MM-DD'
+    );
+    const endDate = moment(this.range.value.end, 'MM-DD-YYYY').format(
+      'YYYY-MM-DD'
+    );
     this.dateRange.push(startDate);
     this.dateRange.push(endDate);
     this.getAdsets();
   }
 
-  onPresetchange(event){
-    if(event.isUserInput) {
+  onPresetchange(event) {
+    if (event.isUserInput) {
       this.preset = event.source.value;
       this.getAdsets();
     }
   }
 
-  openAdSetEditDialog(action:any, obj:any) {
+  openAdSetEditDialog(action: any, obj: any) {
     obj.action = action;
     const adSetEditDialogRef = this.dialog.open(AdSetDialogBoxComponent, {
       width: '460px',
-      data:obj
+      data: obj,
     });
 
-    adSetEditDialogRef.afterClosed().subscribe(result => {
-      if(result.event == 'Update'){
+    adSetEditDialogRef.afterClosed().subscribe((result) => {
+      if (result.event == 'Update') {
         this.updateAdSet(result);
       }
     });
   }
 
-  updateAdSet(adset_result){
+  updateAdSet(adset_result) {
     let row_obj = adset_result.data;
     delete row_obj.action;
 
     console.log(row_obj);
     this.contentLoading = true;
-    this.campaignService.updateAdSet(row_obj).subscribe(result=>{
-      if(result){
+    this.campaignService.updateAdSet(row_obj).subscribe((result) => {
+      if (result) {
         this.getAdsets();
         this.campaignService.openSnackBar('AdSet updated successfully.');
       }
     });
   }
 
-  openAdCreativeDialog(action:any, obj:any) {
+  openAdCreativeDialog(action: any, obj: any) {
     let adsetId = obj.id;
-    if(action == 'Add'){
+    if (action == 'Add') {
       obj = {};
     }
     obj.action = action;
     const adCreativeDialogRef = this.dialog.open(AdCreativeDialogBoxComponent, {
       width: '460px',
-      data:obj
+      data: obj,
     });
 
-    adCreativeDialogRef.afterClosed().subscribe(result => {
-      if(result.event == 'Add'){
+    adCreativeDialogRef.afterClosed().subscribe((result) => {
+      if (result.event == 'Add') {
         result.data.adset_id = adsetId;
         this.addAdCreative(result);
       }
@@ -180,24 +195,23 @@ export class FbAdSetsComponent implements OnInit {
     });
   }
 
-  addAdCreative(creative_result){
+  addAdCreative(creative_result) {
     let row_obj = creative_result.data;
     let action = row_obj.action;
     delete row_obj.action;
 
-
-    this.campaignService.createCreative(row_obj).subscribe(result=>{
-      if(result){
+    this.campaignService.createCreative(row_obj).subscribe((result) => {
+      if (result) {
         row_obj.creativeId = result['id'];
         this.openAdsDialog(action, row_obj);
       }
     });
   }
 
-  openAdsDialog(action:any, obj:any) {
+  openAdsDialog(action: any, obj: any) {
     let creativeId = obj.creativeId;
     let adsetId = obj.adset_id;
-    if(action == 'Add'){
+    if (action == 'Add') {
       obj = {};
     }
     obj.adSetId = adsetId;
@@ -205,11 +219,11 @@ export class FbAdSetsComponent implements OnInit {
     obj.action = action;
     const adsDialogRef = this.dialog.open(AdsDialogBoxComponent, {
       width: '460px',
-      data:obj
+      data: obj,
     });
 
-    adsDialogRef.afterClosed().subscribe(result => {
-      if(result.event == 'Add'){
+    adsDialogRef.afterClosed().subscribe((result) => {
+      if (result.event == 'Add') {
         // console.log(result, 'from ads');
         this.addAds(result);
       }
@@ -219,22 +233,20 @@ export class FbAdSetsComponent implements OnInit {
     });
   }
 
-  addAds(creative_result){
+  addAds(creative_result) {
     let row_obj = creative_result.data;
     let action = row_obj.action;
     delete row_obj.action;
 
-    this.campaignService.createAd(row_obj).subscribe(result=>{
-      if(result){
+    this.campaignService.createAd(row_obj).subscribe((result) => {
+      if (result) {
         this.campaignService.openSnackBar('Ads added successfully.');
         console.log(result, 'ok');
       }
     });
   }
 
-  
-  viewAdAssets(obj: any){
+  viewAdAssets(obj: any) {
     this.router.navigate([`/adCreatives/${obj['id']}`]);
   }
-
 }
