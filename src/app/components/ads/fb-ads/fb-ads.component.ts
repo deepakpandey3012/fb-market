@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { CampaignService } from 'src/app/campaign.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { AdsPreviewDialogBoxComponent } from '../ads-preview-dialog-box/ads-preview-dialog-box.component';
 
 export interface AddAdsetData {
   campaign_id: string;
@@ -24,12 +25,21 @@ export interface AddAdsetData {
 @Component({
   selector: 'app-fb-ads',
   templateUrl: './fb-ads.component.html',
-  styleUrls: ['./fb-ads.component.scss']
+  styleUrls: ['./fb-ads.component.scss'],
 })
 export class FbAdsComponent implements OnInit {
-  displayedColumns: string[] = 
-  ['name', 'status', 'adset_name', 'adcreative_name', 'bid_amount', 'reach',
-    'spend', 'frequency', 'created_time', 'updated_time'];
+  displayedColumns: string[] = [
+    'name',
+    'status',
+    'adset_name',
+    'adcreative_name',
+    'bid_amount',
+    'reach',
+    'spend',
+    'frequency',
+    'created_time',
+    'updated_time',
+  ];
   preset: string;
   dateRange: string[] = [];
   isVerified: boolean = false;
@@ -37,32 +47,33 @@ export class FbAdsComponent implements OnInit {
   ads: any;
   totalAdsCount: number = 0;
   contentLoading: boolean = false;
+  preview;
 
   preSets = [
-    {value: 'today'},
-    {value: 'yesterday'},
-    {value: 'this_month'},
-    {value: 'last_month'},
-    {value: 'this_quarter'},
-    {value: 'maximum'},
-    {value: 'last_3d'},
-    {value: 'last_7d'},
-    {value: 'last_14d'},
-    {value: 'last_28d'},
-    {value: 'last_30d'},
-    {value: 'last_90d'},
-    {value: 'last_quarter'},
-    {value: 'last_year'},
-    {value: 'this_week_mon_today'},
-    {value: 'this_week_sun_today'},
-    {value: 'this_year'},
+    { value: 'today' },
+    { value: 'yesterday' },
+    { value: 'this_month' },
+    { value: 'last_month' },
+    { value: 'this_quarter' },
+    { value: 'maximum' },
+    { value: 'last_3d' },
+    { value: 'last_7d' },
+    { value: 'last_14d' },
+    { value: 'last_28d' },
+    { value: 'last_30d' },
+    { value: 'last_90d' },
+    { value: 'last_quarter' },
+    { value: 'last_year' },
+    { value: 'this_week_mon_today' },
+    { value: 'this_week_sun_today' },
+    { value: 'this_year' },
   ];
 
-  @ViewChild(MatTable, { static: true })table!: MatTable<any>;
+  @ViewChild(MatTable, { static: true }) table!: MatTable<any>;
 
   range = new FormGroup({
     start: new FormControl(),
-    end: new FormControl()
+    end: new FormControl(),
   });
 
   subscription: Subscription;
@@ -70,43 +81,76 @@ export class FbAdsComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private campaignService: CampaignService,
-    private router: Router) {}
+    private router: Router
+  ) {}
 
-  ngOnInit(){
-    this.subscription = this.campaignService.currentVerification.subscribe(data => {
-      if(data){
-        this.getAds();
-      }else{
-      this.router.navigate(['/']);
-      }
-    });
-    // this.getAds();
+  ngOnInit() {
+    // this.subscription = this.campaignService.currentVerification.subscribe(
+    //   (data) => {
+    //     if (data) {
+    //       this.getAds();
+    //     } else {
+    //       this.router.navigate(['/']);
+    //     }
+    //   }
+    // );
+    this.getAds();
   }
 
-  getAds(){
+  getAds() {
     this.contentLoading = true;
-    this.campaignService.getAllAds(this.dateRange, this.preset).subscribe(result=>{
-      this.ads = result;
-      this.totalAdsCount = this.ads.length;
+    this.campaignService
+      .getAllAds(this.dateRange, this.preset)
+      .subscribe((result) => {
+        this.ads = result;
+        this.totalAdsCount = this.ads.length;
+        this.contentLoading = false;
+      });
+  }
+
+  dispayPreview(ad) {
+    this.contentLoading = true;
+    this.campaignService.getAdPreview(ad.id).subscribe((result) => {
+      this.preview = result;
       this.contentLoading = false;
+      console.log(this.preview);
+      this.openPreviewDialog({
+        id: ad.id,
+        name: ad.name,
+        source: this.preview,
+      });
+    });
+  }
+
+  openPreviewDialog(obj: any) {
+    const dialogRef = this.dialog.open(AdsPreviewDialogBoxComponent, {
+      data: obj,
+      panelClass: 'my-dialog',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('closed');
     });
   }
 
   onDateChange(event: any): void {
     this.range.value.date = event;
     console.log(this.range.value.start);
-    const startDate = moment(this.range.value.start, 'MM-DD-YYYY').format('YYYY-MM-DD');
-    const endDate = moment(this.range.value.end, 'MM-DD-YYYY').format('YYYY-MM-DD');
+    const startDate = moment(this.range.value.start, 'MM-DD-YYYY').format(
+      'YYYY-MM-DD'
+    );
+    const endDate = moment(this.range.value.end, 'MM-DD-YYYY').format(
+      'YYYY-MM-DD'
+    );
     this.dateRange.push(startDate);
     this.dateRange.push(endDate);
     this.getAds();
   }
 
-  onPresetchange(event){
-    if(event.isUserInput) {
+  onPresetchange(event) {
+    if (event.isUserInput) {
       this.preset = event.source.value;
       this.getAds();
     }
   }
-
 }

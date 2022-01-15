@@ -38,12 +38,12 @@ export interface AddAdsetData {
   optimization_goal: string;
   start_time: number;
   end_time: number;
-  age_min: number; 
+  age_min: number;
   age_max: number;
   genders: number;
-  device_platforms: string[]; 
-  // publisher_platforms: string[]; 
-  countries: string[]; 
+  device_platforms: string[];
+  // publisher_platforms: string[];
+  countries: string[];
 }
 
 @Component({
@@ -51,7 +51,7 @@ export interface AddAdsetData {
   templateUrl: './fb-ad-campaigns.component.html',
   styleUrls: ['./fb-ad-campaigns.component.scss'],
 })
-export class FbAdCampaignsComponent implements OnInit, OnDestroy {
+export class FbAdCampaignsComponent implements OnInit {
   displayedColumns: string[] = ['name', 'status', 'objective', 'action'];
   preset: string;
   dateRange: string[] = [];
@@ -62,31 +62,30 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
   contentLoading: boolean = false;
 
   preSets = [
-    {value: 'today'},
-    {value: 'yesterday'},
-    {value: 'this_month'},
-    {value: 'last_month'},
-    {value: 'this_quarter'},
-    {value: 'maximum'},
-    {value: 'last_3d'},
-    {value: 'last_7d'},
-    {value: 'last_14d'},
-    {value: 'last_28d'},
-    {value: 'last_30d'},
-    {value: 'last_90d'},
-    {value: 'last_quarter'},
-    {value: 'last_year'},
-    {value: 'this_week_mon_today'},
-    {value: 'this_week_sun_today'},
-    {value: 'this_year'},
+    { value: 'today' },
+    { value: 'yesterday' },
+    { value: 'this_month' },
+    { value: 'last_month' },
+    { value: 'this_quarter' },
+    { value: 'maximum' },
+    { value: 'last_3d' },
+    { value: 'last_7d' },
+    { value: 'last_14d' },
+    { value: 'last_28d' },
+    { value: 'last_30d' },
+    { value: 'last_90d' },
+    { value: 'last_quarter' },
+    { value: 'last_year' },
+    { value: 'this_week_mon_today' },
+    { value: 'this_week_sun_today' },
+    { value: 'this_year' },
   ];
 
-
-  @ViewChild(MatTable, { static: true })table!: MatTable<any>;
+  @ViewChild(MatTable, { static: true }) table!: MatTable<any>;
 
   range = new FormGroup({
     start: new FormControl(),
-    end: new FormControl()
+    end: new FormControl(),
   });
 
   subscription: Subscription;
@@ -94,97 +93,104 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     private campaignService: CampaignService,
-    private router: Router) {}
+    private router: Router
+  ) {}
 
-  ngOnInit(){
-    this.subscription = this.campaignService.currentVerification.subscribe(data => {
-      // this.getCampaigns();
-      if(data){
-        this.getCampaigns();
-      }else{
-      this.router.navigate(['/']);
-      }
-    });
+  ngOnInit() {
+    // this.subscription = this.campaignService.currentVerification.subscribe(data => {
+    //   // this.getCampaigns();
+    //   if(data){
+    //     this.getCampaigns();
+    //   }else{
+    //   this.router.navigate(['/']);
+    //   }
+    // });
+    this.getCampaigns();
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
+  // ngOnDestroy() {
+  //   this.subscription.unsubscribe();
+  // }
 
-  getCampaigns(){
+  getCampaigns() {
     this.contentLoading = true;
-    this.campaignService.getDefaultCampaigns(this.dateRange, this.preset).subscribe(result=>{
-      this.campaigns = result;
-      this.totalCampaignsCount = this.campaigns.length;
-      this.contentLoading = false;
-    });
+    this.campaignService
+      .getDefaultCampaigns(this.dateRange, this.preset)
+      .subscribe((result) => {
+        this.campaigns = result;
+        this.totalCampaignsCount = this.campaigns.length;
+        this.contentLoading = false;
+      });
   }
 
   onDateChange(event: any): void {
     this.range.value.date = event;
     console.log(this.range.value.start);
-    const startDate = moment(this.range.value.start, 'MM-DD-YYYY').format('YYYY-MM-DD');
-    const endDate = moment(this.range.value.end, 'MM-DD-YYYY').format('YYYY-MM-DD');
+    const startDate = moment(this.range.value.start, 'MM-DD-YYYY').format(
+      'YYYY-MM-DD'
+    );
+    const endDate = moment(this.range.value.end, 'MM-DD-YYYY').format(
+      'YYYY-MM-DD'
+    );
     this.dateRange.push(startDate);
     this.dateRange.push(endDate);
     this.getCampaigns();
   }
 
-  onPresetchange(event){
-    if(event.isUserInput) {
+  onPresetchange(event) {
+    if (event.isUserInput) {
       this.preset = event.source.value;
       this.getCampaigns();
     }
   }
 
-  openCampaignDialog(action: any,obj: any) {
+  openCampaignDialog(action: any, obj: any) {
     obj.action = action;
     const dialogRef = this.dialog.open(CampaignDialogBoxComponent, {
       width: '460px',
-      data:obj
+      data: obj,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result.event == 'Add'){
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result.event == 'Add') {
         this.addCampaign(result);
-      }
-      else if(result.event == 'Update'){
+      } else if (result.event == 'Update') {
         this.updateCampaign(result);
       }
     });
   }
 
-  updateCampaign(campaign_result){
+  updateCampaign(campaign_result) {
     let row_obj = campaign_result.data;
     delete row_obj.action;
     row_obj = {
       ...row_obj,
-      [row_obj.campaign_budget_label]: row_obj.campaign_budget_amount
-    }
+      [row_obj.campaign_budget_label]: row_obj.campaign_budget_amount,
+    };
     delete row_obj.campaign_budget_label;
     delete row_obj.campaign_budget_amount;
 
-    this.campaignService.updateCampaign(row_obj).subscribe(result=>{
-      if(result){
+    this.campaignService.updateCampaign(row_obj).subscribe((result) => {
+      if (result) {
         this.campaignService.openSnackBar('Ad Campaign updated successfully.');
         this.getCampaigns();
       }
     });
   }
 
-  addCampaign(campaign_result){
+  addCampaign(campaign_result) {
     let row_obj = campaign_result.data;
     delete row_obj.action;
     row_obj = {
       ...row_obj,
-      [row_obj.campaign_budget_label]: row_obj.campaign_budget_amount
-    }
+      [row_obj.campaign_budget_label]: row_obj.campaign_budget_amount,
+    };
     delete row_obj.campaign_budget_label;
     delete row_obj.campaign_budget_amount;
 
     console.log(row_obj);
-    this.campaignService.createCampaign(row_obj).subscribe(result=>{
-      if(result){
+    this.campaignService.createCampaign(row_obj).subscribe((result) => {
+      if (result) {
         this.campaignService.openSnackBar('Ad Campaign added successfully.');
         this.getCampaigns();
         this.openAdSetDialog(campaign_result.event, {}, result['id']);
@@ -192,16 +198,16 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
     });
   }
 
-  openAdSetDialog(action:any, obj:any, campaignId:string) {
+  openAdSetDialog(action: any, obj: any, campaignId: string) {
     obj.action = action;
     obj.campaign_id = campaignId;
     const adSetDialogRef = this.dialog.open(AdSetDialogBoxComponent, {
       width: '460px',
-      data:obj
+      data: obj,
     });
 
-    adSetDialogRef.afterClosed().subscribe(result => {
-      if(result.event == 'Add'){
+    adSetDialogRef.afterClosed().subscribe((result) => {
+      if (result.event == 'Add') {
         this.addAdSet(result);
       }
       // else if(result.event == 'Update'){
@@ -210,24 +216,23 @@ export class FbAdCampaignsComponent implements OnInit, OnDestroy {
     });
   }
 
-  addAdSet(adset_result){
+  addAdSet(adset_result) {
     let row_obj = adset_result.data;
     delete row_obj.action;
     row_obj = {
       ...row_obj,
-      [row_obj.adset_budget_label]: row_obj.adset_budget_amount
-    }
+      [row_obj.adset_budget_label]: row_obj.adset_budget_amount,
+    };
     delete row_obj.adset_budget_label;
     delete row_obj.adset_budget_amount;
 
     console.log(row_obj);
 
-    this.campaignService.createAdSet(row_obj).subscribe(result=>{
-      if(result){
+    this.campaignService.createAdSet(row_obj).subscribe((result) => {
+      if (result) {
         this.campaignService.openSnackBar('Ad Sets added successfully.');
         console.log(result);
       }
     });
   }
-
 }

@@ -97,22 +97,21 @@ export class FbAdSetsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.subscription = this.campaignService.currentVerification.subscribe(
-      (data) => {
-        if (data) {
-          this.getAdsets();
-        } else {
-          this.router.navigate(['/']);
-        }
-      }
-    );
-    // this.getAdsets();
-    //lado
+    // this.subscription = this.campaignService.currentVerification.subscribe(
+    //   (data) => {
+    //     if (data) {
+    //       this.getAdsets();
+    //     } else {
+    //       this.router.navigate(['/']);
+    //     }
+    //   }
+    // );
+    this.getAdsets();
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
+  // ngOnDestroy() {
+  //   this.subscription.unsubscribe();
+  // }
 
   getAdsets() {
     this.contentLoading = true;

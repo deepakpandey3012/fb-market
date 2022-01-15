@@ -5,20 +5,20 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MatSliderModule } from '@angular/material/slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatTableModule} from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort'
+import { MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatNativeDateModule} from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {MatTabsModule} from '@angular/material/tabs'
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTabsModule } from '@angular/material/tabs';
 import { FbAdCampaignsComponent } from './components/campaigns/fb-ad-campaigns/fb-ad-campaigns.component';
 import { CampaignDialogBoxComponent } from './components/campaigns/campaign-dialog-box/campaign-dialog-box.component';
 import { FbAdSetsComponent } from './components/adsets/fb-ad-sets/fb-ad-sets.component';
@@ -35,13 +35,14 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { LoginComponent } from './components/login/login.component';
-import {MatCardModule} from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
 import { CookieService } from 'ngx-cookie-service';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { FbAdCreativesComponent } from './components/adsets/fb-ad-creative/fb-ad-creative.component';
-import {MatChipsModule} from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { CustomLocationComponent } from './components/adsets/custom-locations/custom-locations.component';
+import { AdsPreviewDialogBoxComponent } from './components/ads/ads-preview-dialog-box/ads-preview-dialog-box.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { CustomLocationComponent } from './components/adsets/custom-locations/cu
     NavBarComponent,
     LoginComponent,
     FbAdCreativesComponent,
-    CustomLocationComponent
+    CustomLocationComponent,
+    AdsPreviewDialogBoxComponent,
   ],
   imports: [
     BrowserModule,
@@ -73,7 +75,7 @@ import { CustomLocationComponent } from './components/adsets/custom-locations/cu
     MatButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    ReactiveFormsModule ,
+    ReactiveFormsModule,
     MatSelectModule,
     HttpClientModule,
     MatSlideToggleModule,
@@ -88,9 +90,9 @@ import { CustomLocationComponent } from './components/adsets/custom-locations/cu
     MatCardModule,
     MatSnackBarModule,
     MatTooltipModule,
-    MatChipsModule
+    MatChipsModule,
   ],
   providers: [CookieService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -2,41 +2,50 @@
 <h3 mat-dialog-title>Add an Ad Set</h3>
 
 <div mat-dialog-content>
-  
-  <div style="padding:0px 0px 20px 10px;" *ngIf="statusEditable">
-    <label style="padding-right: 150px ;"> Status</label>
+  <div style="padding: 0px 0px 20px 10px" *ngIf="statusEditable">
+    <label style="padding-right: 150px"> Status</label>
     <mat-slide-toggle [(ngModel)]="isStatusChecked"></mat-slide-toggle>
   </div>
 
-  <mat-form-field style="width: 400px;">
-    <input placeholder="{{action}} Name" matInput [(ngModel)]="local_data.name" [required]="true">
+  <mat-form-field style="width: 400px">
+    <input
+      placeholder="{{ action }} Name"
+      matInput
+      [(ngModel)]="local_data.name"
+      [required]="true"
+    />
   </mat-form-field>
 
-  <div style="padding:0px 0px 20px 10px;">
-    <label style="padding-right: 240px ;"> Dynamic Creative</label>
-    <mat-slide-toggle [(ngModel)]="local_data.is_dynamic_creative"></mat-slide-toggle>
+  <div style="padding: 0px 0px 20px 10px">
+    <label style="padding-right: 240px"> Dynamic Creative</label>
+    <mat-slide-toggle
+      [(ngModel)]="local_data.is_dynamic_creative"
+    ></mat-slide-toggle>
   </div>
 
-  <label style="padding:0px 0px 20px 10px;">Optimization</label>
+  <label style="padding: 0px 0px 20px 10px">Optimization</label>
   <mat-form-field appearance="fill">
-    <mat-select [(ngModel)]="local_data.optimization_goal" name="SelectedOptimization">
+    <mat-select
+      [(ngModel)]="local_data.optimization_goal"
+      name="SelectedOptimization"
+    >
       <mat-option *ngFor="let obj of optimizationGoals" [value]="obj.value">
-        {{obj.value}}
+        {{ obj.value }}
       </mat-option>
-    </mat-select> 
+    </mat-select>
   </mat-form-field>
 
-  <label style="padding:0px 0px 20px 10px;">Billing</label>
+  <label style="padding: 0px 0px 20px 10px">Billing</label>
   <mat-form-field appearance="fill">
     <mat-select [(ngModel)]="local_data.billing_event" name="SelectedBilling">
       <mat-option *ngFor="let obj of billingEvents" [value]="obj.value">
-        {{obj.value}}
+        {{ obj.value }}
       </mat-option>
-    </mat-select> 
+    </mat-select>
   </mat-form-field>
 
-  <label style="padding:0px 0px 20px 10px;">Budget & schedule</label>
-    <!-- <mat-form-field appearance="fill">
+  <label style="padding: 0px 0px 20px 10px">Budget & schedule</label>
+  <!-- <mat-form-field appearance="fill">
       <mat-select [(ngModel)]="adSetBudgetLabel" name="budgetLabel">
         <mat-option *ngFor="let obj of adSetBudgetLabels" [value]="obj.value">
           {{obj.value}}
@@ -49,85 +58,114 @@
       <input matInput type="number" [(ngModel)]="adSetBudgetAmount">
     </mat-form-field> -->
 
-    <label style="padding:0px 0px 20px 10px;">Start Date-Time</label>
-    <div class="flex-container">
-  
-      <input [formControl]="startDateFormCtrl" matInput [matDatepicker]="picker1">
-      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-      <mat-datepicker #picker1></mat-datepicker>
+  <label style="padding: 0px 0px 20px 10px">Start Date-Time</label>
+  <div class="flex-container">
+    <input
+      [formControl]="startDateFormCtrl"
+      matInput
+      [matDatepicker]="picker1"
+    />
+    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+    <mat-datepicker #picker1></mat-datepicker>
 
-      <input [formControl]="endDateFormCtrl" matInput [matDatepicker]="picker2">
-      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-      <mat-datepicker #picker2></mat-datepicker>
-    </div>
+    <input [formControl]="endDateFormCtrl" matInput [matDatepicker]="picker2" />
+    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+    <mat-datepicker #picker2></mat-datepicker>
+  </div>
 
+  <mat-form-field appearance="fill">
+    <mat-label>Bid Amount</mat-label>
+    <input matInput type="number" [(ngModel)]="local_data.bid_amount" />
+  </mat-form-field>
+
+  <mat-form-field class="flex-container" appearance="fill">
+    <mat-label>Audience</mat-label>
+    <mat-select
+      [formControl]="target_audience"
+      [(value)]="local_data.genders"
+      multiple
+    >
+      <mat-option *ngFor="let aud of adSetgendertLabels" [value]="aud.value">{{
+        aud.DisplayName
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Minimum Age(at least 13)</mat-label>
+    <input matInput type="number" [(ngModel)]="local_data.age_min" />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Maximum Age(at most 65)</mat-label>
+    <input matInput type="number" [(ngModel)]="local_data.age_max" />
+  </mat-form-field>
+
+  <mat-form-field class="flex-container" appearance="fill">
+    <mat-label>Countries</mat-label>
+    <mat-select
+      [formControl]="target_countries"
+      [(value)]="local_data.countries"
+      multiple
+    >
+      <mat-option *ngFor="let category of countries" [value]="category.value">{{
+        category.Displayname
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div style="padding: 0px 0px 20px 10px">
+    <label style="padding-right: 150px"> Add Custom Location</label>
+    <mat-slide-toggle
+      [(ngModel)]="local_data.has_custom_locations"
+    ></mat-slide-toggle>
+  </div>
+  <div *ngIf="local_data.has_custom_locations">
     <mat-form-field appearance="fill">
-      <mat-label>Bid Amount</mat-label>
-      <input matInput type="number" [(ngModel)]="local_data.bid_amount">
+      <mat-label>Locations</mat-label>
+      <mat-chip-list #chipList aria-label="Location selection">
+        <mat-chip
+          *ngFor="let location of customLocations"
+          (removed)="remove(location)"
+        >
+          {{ location?.latitude + "/" + location?.longitude }}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+      </mat-chip-list>
     </mat-form-field>
+    <mat-icon
+      matTooltip="Add a Custom Location"
+      class="hover-effect"
+      style="margin-left: 46%"
+      (click)="openAddCustomLocationDialog()"
+      >add_to_queue</mat-icon
+    >
+  </div>
 
-    <mat-form-field class="flex-container" appearance="fill">
-      <mat-label>Audience</mat-label>
-      <mat-select [formControl]="target_audience" [(value)]="local_data.genders" multiple>
-        <mat-option *ngFor="let aud of adSetgendertLabels" [value]="aud.value">{{aud.DisplayName}}</mat-option>
-      </mat-select>
-    </mat-form-field>
+  <mat-form-field class="flex-container" appearance="fill">
+    <mat-label>Device Platform</mat-label>
+    <mat-select
+      [formControl]="target_device"
+      [(value)]="local_data.device_platforms"
+      multiple
+    >
+      <mat-option *ngFor="let obj of devicePlatforms" [value]="obj.value">{{
+        obj.value
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Minimum Age(at least 13)</mat-label>
-      <input matInput type="number" [(ngModel)]="local_data.age_min">
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Maximum Age(at most 65)</mat-label>
-      <input matInput type="number" [(ngModel)]="local_data.age_max">
-    </mat-form-field>
-
-    <mat-form-field class="flex-container" appearance="fill">
-      <mat-label>Countries</mat-label>
-      <mat-select [formControl]="target_countries" [(value)]="local_data.countries" multiple>
-        <mat-option *ngFor="let category of countries" [value]="category.value">{{category.Displayname}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <div style="padding:0px 0px 20px 10px;">
-      <label style="padding-right: 150px ;"> Add Custom Location</label>
-      <mat-slide-toggle [(ngModel)]="local_data.has_custom_locations"></mat-slide-toggle>
-    </div>
-    <div *ngIf="local_data.has_custom_locations">
-      <mat-form-field appearance="fill">
-        <mat-label>Locations</mat-label>
-        <mat-chip-list #chipList aria-label="Location selection">
-          <mat-chip
-            *ngFor="let location of customLocations"
-            (removed)="remove(location)">
-            {{location?.latitude+'/'+location?.longitude}}
-            <button matChipRemove>
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip>
-        </mat-chip-list>
-      </mat-form-field>
-      <mat-icon matTooltip="Add a Custom Location" class="hover-effect" style="margin-left: 46%;" (click)="openAdSetEditDialog()">add_to_queue</mat-icon>
-    </div>
-   
-    <mat-form-field class="flex-container" appearance="fill">
-      <mat-label>Device Platform</mat-label>
-      <mat-select [formControl]="target_device" [(value)]="local_data.device_platforms" multiple>
-        <mat-option *ngFor="let obj of devicePlatforms" [value]="obj.value">{{obj.value}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <!-- <mat-form-field class="flex-container" appearance="fill">
+  <!-- <mat-form-field class="flex-container" appearance="fill">
       <mat-label>Publisher Platform</mat-label>
       <mat-select [formControl]="target_publisher" [(value)]="selectedpublisherPlatform" multiple>
         <mat-option *ngFor="let obj of publisherPlatforms" [value]="obj.value">{{obj.value}}</mat-option>
       </mat-select>
     </mat-form-field> -->
-
-
-  
 </div>
-<div mat-dialog-actions style="padding-left: 250px;">
-  <button mat-raised-button (click)="doAction()" color="warn">{{action}}</button>
+<div mat-dialog-actions style="padding-left: 250px">
+  <button mat-raised-button (click)="doAction()" color="warn">
+    {{ action }}
+  </button>
   <button mat-raised-button (click)="closeDialog()">Cancel</button>
 </div>
